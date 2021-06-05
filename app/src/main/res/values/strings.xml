@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Jobsity</string>
+    <string name="action_favorites">Favorites</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="index_fragment_label">Index</string>
+    <string name="details_fragment_label">Show Details</string>
+    <string name="episode_fragment_label">Episode Details</string>
+    <string name="favorites_fragment_label">Favorites</string>
+    <string name="search_field_title">"Search: "</string>
+    <string name="time_title">Schedule:</string>
+    <string name="time_at">" at "</string>
+    <string name="details_season_header">"Season: "</string>
+    <string name="episode_name_header">"Episode: "</string>
+</resources>

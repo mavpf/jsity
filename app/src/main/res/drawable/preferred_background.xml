@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/preferred_background"
+        android:drawable="@android:color/transparent"/>
+    <item android:id="@+id/preferred_toggle"
+        android:drawable="@drawable/preferred_selector"/>
+</layer-list>

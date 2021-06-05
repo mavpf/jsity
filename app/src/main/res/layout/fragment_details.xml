@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".details.DetailsFragment">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/details_main_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/detail_card_margin"
+        android:backgroundTint="@color/light_gray"
+        app:cardCornerRadius="@dimen/card_corner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/detail_poster_image"
+                android:layout_width="340px"
+                android:layout_height="500px"
+                android:layout_margin="@dimen/card_poster_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/detail_show_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_title_margin"
+                android:textSize="@dimen/card_title_size"
+                app:layout_constraintStart_toEndOf="@id/detail_poster_image"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/detail_show_genre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_text_margin"
+                app:layout_constraintStart_toEndOf="@id/detail_poster_image"
+                app:layout_constraintTop_toBottomOf="@id/detail_show_name" />
+
+
+            <TextView
+                android:id="@+id/detail_show_schedule_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_text_margin"
+                android:text="@string/time_title"
+                app:layout_constraintStart_toEndOf="@id/detail_poster_image"
+                app:layout_constraintTop_toBottomOf="@id/detail_show_genre" />
+
+            <TextView
+                android:id="@+id/detail_show_schedule_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_text_margin"
+                android:layout_marginEnd="@dimen/card_text_margin"
+                app:layout_constraintStart_toEndOf="@id/detail_show_schedule_title"
+                app:layout_constraintTop_toBottomOf="@id/detail_show_genre" />
+
+            <TextView
+                android:id="@+id/detail_show_schedule_at"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_text_margin"
+                android:layout_marginEnd="@dimen/card_text_margin"
+                android:text="@string/time_at"
+                app:layout_constraintStart_toEndOf="@id/detail_show_schedule_days"
+                app:layout_constraintTop_toBottomOf="@id/detail_show_genre" />
+
+            <TextView
+                android:id="@+id/detail_show_schedule_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_text_margin"
+                android:layout_marginEnd="@dimen/card_text_margin"
+                app:layout_constraintStart_toEndOf="@id/detail_show_schedule_at"
+                app:layout_constraintTop_toBottomOf="@id/detail_show_genre" />
+
+            <TextView
+                android:id="@+id/detail_show_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/card_text_margin"
+                android:layout_marginTop="@dimen/details_summary_top_margin"
+                android:layout_marginEnd="@dimen/card_text_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/detail_poster_image" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/spinner_season_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/detail_card_margin"
+        android:backgroundTint="@color/light_gray"
+        app:cardCornerRadius="@dimen/card_corner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/details_main_card">
+
+        <Spinner
+            android:id="@+id/season_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/episodes_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/detail_card_margin"
+        android:background="@color/black"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_season_card" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

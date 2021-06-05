@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/IndexFragment">
+
+    <fragment
+        android:id="@+id/IndexFragment"
+        android:name="com.example.jobsity.index.IndexFragment"
+        android:label="@string/index_fragment_label">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/ShowFragment" />
+        <action
+            android:id="@+id/action_IndexFragment_to_favoritesFragment"
+            app:destination="@id/FavoritesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ShowFragment"
+        android:name="com.example.jobsity.details.DetailsFragment"
+        android:label="@string/details_fragment_label"
+        tools:layout="@layout/fragment_details">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/IndexFragment" />
+        <action
+            android:id="@+id/action_ShowFragment_to_placeholder"
+            app:destination="@id/EpisodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/EpisodeFragment"
+        android:name="com.example.jobsity.episode.EpisodeFragment"
+        android:label="@string/episode_fragment_label">
+        <action
+            android:id="@+id/action_EpisodeFragment_to_ShowFragment"
+            app:destination="@id/ShowFragment" />
+        <action
+            android:id="@+id/action_EpisodeFragment_to_ShowFragment2"
+            app:destination="@id/ShowFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/FavoritesFragment"
+        android:name="com.example.jobsity.favorites.FavoritesFragment"
+        android:label="@string/favorites_fragment_label">
+        <action
+            android:id="@+id/action_favoritesFragment_to_EpisodeFragment"
+            app:destination="@id/EpisodeFragment" />
+    </fragment>
+</navigation>
