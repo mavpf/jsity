@@ -8,40 +8,48 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-annotation class NullToEmptyString
-
+//Base URL for API
 private const val BASE_URL = "https://api.tvmaze.com"
 
+//Build Moshi JSON
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 
+//Build retrofit to get API data
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
     .build()
 
+//Create interfaces for APIs
 interface ShowIndexApiService {
+
+    //Get shows by page
     @GET("shows")
     suspend fun getIndex(
         @Query("page") page : Int
     ): List<ShowIndex>
 
+    //Get shows by name
     @GET("search/shows")
     suspend fun getShowNames(
         @Query("q") q: String
     ): List<ShowNames>
 
+    //Get show details
     @GET("shows/{id}")
     suspend fun getShowDetail(
         @Path("id") id: Int
     ): ShowDetails
 
+    //Get shows episodes and seasons
     @GET("shows/{id}/episodes")
     suspend fun getShowEpisodes(
         @Path("id") id: Int
     ): List<ShowEpisodes>
 
+    //Get episode details
     @GET("episodes/{episodeId}")
     suspend fun getEpisodeDetails(
         @Path("episodeId") episodeId: Int

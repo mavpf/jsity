@@ -2,6 +2,8 @@ package com.example.jobsity.network
 
 import com.squareup.moshi.Json
 
+//Dataclasses to handle API information
+
 data class Images(
     val medium: String,
     val original: String

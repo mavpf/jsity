@@ -14,13 +14,16 @@ import com.example.jobsity.network.ShowIndex
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 
+//Recyclerview adapter for shows
+//Used for main index and favorites
 class IndexAdapter constructor(
     private val dataset: List<ShowIndex>,
     private val favorites: List<Int>,
+    //Clicklistener for favorites
     val clickListener: (ShowIndex) -> Unit
 ) : RecyclerView.Adapter<IndexAdapter.ShowIndexViewHolder>() {
 
-
+    //Define fields
     class ShowIndexViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var showName: TextView = view.findViewById(R.id.show_name)
         var showGenre: TextView = view.findViewById(R.id.show_genre)
@@ -40,18 +43,26 @@ class IndexAdapter constructor(
         return ShowIndexViewHolder(adapterLayout)
     }
 
+    //Bind data
     override fun onBindViewHolder(holder: ShowIndexViewHolder, position: Int) {
         val item = dataset[position]
         holder.showName.text = item.name
+        //Make genre list as string
         holder.showGenre.text = item.genres.joinToString(", ")
+        //Load image with Picasso
         Picasso.get().load(item.image?.medium).into(holder.showPoster)
 
+        //Check if its already defined as favorite, and change the icon
         holder.preferredIcon.isChecked = favorites.indexOf(item.id) != -1
 
+        //Clicklistener for favorites
         holder.preferredIcon.setOnClickListener {
+            //If clicked, return to fragment the information regarding the show
+            //Needed to update the favorites
             clickListener(item)
         }
 
+        //Listener to go to show details
         holder.detailButton.setOnClickListener {
             val bundle = bundleOf("id" to item.id.toString())
             it.findNavController().navigate(R.id.ShowFragment, bundle)

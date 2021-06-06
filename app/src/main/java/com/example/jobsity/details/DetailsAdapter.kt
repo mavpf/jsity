@@ -13,10 +13,12 @@ import com.example.jobsity.network.ShowEpisodes
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
 
+//Recycler view adapter for episodes
 class DetailsAdapter(
     private val dataset: List<ShowEpisodes>
 ) : RecyclerView.Adapter<DetailsAdapter.EpisodesViewHolder>() {
 
+    //Define fields
     class EpisodesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var episodePoster: ImageView = view.findViewById(R.id.episode_poster)
         var episodeName: TextView = view.findViewById(R.id.episode_name)
@@ -34,12 +36,16 @@ class DetailsAdapter(
         return EpisodesViewHolder(adapterLayout)
     }
 
+    //Bind data
     override fun onBindViewHolder(holder: EpisodesViewHolder, position: Int) {
         val item = dataset[position]
+        //Concatenate two information, episode number and name
         val episodeNameNumber = item.number.toString() + ". " + item.name
+        //Load image with Picasso
         Picasso.get().load(item.image?.medium).into(holder.episodePoster)
         holder.episodeName.text = episodeNameNumber
 
+        //Make the card clickable, to more information regarding episode
         holder.episodeCard.setOnClickListener {
             val bundle = bundleOf("idEpisode" to item.idEpisode.toString())
             it.findNavController().navigate(R.id.EpisodeFragment, bundle)

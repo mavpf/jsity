@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
+//Regular database creation for Room.
 @Database(
     entities = [Favorites::class],
     version = 1,

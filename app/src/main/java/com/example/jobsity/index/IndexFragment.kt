@@ -28,8 +28,6 @@ class IndexFragment : Fragment() {
 
     private lateinit var recyclerIndex: RecyclerView
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
@@ -41,14 +39,17 @@ class IndexFragment : Fragment() {
 
         recyclerIndex = root.findViewById(R.id.main_recycler_view)
 
+        //Set SWIPE actions
         recyclerIndex.setOnTouchListener(object : OnSwipeTouchListener(requireContext()) {
             @SuppressLint("ClickableViewAccessibility")
+            //Swipe left will increase pages
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
                 viewModel.indexPageIncrease()
                 viewModel.getShowIndex(viewModel.indexPage())
             }
 
+            //Swipe right, will decrease, until 0
             @SuppressLint("ClickableViewAccessibility")
             override fun onSwipeRight() {
                 super.onSwipeRight()
@@ -65,8 +66,10 @@ class IndexFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Search button
         val searchButton: Button = view.findViewById(R.id.button_search)
 
+        //Search data from search API. If none, return full index
         searchButton.setOnClickListener {
             val searchField = view.findViewById<EditText>(R.id.search_field_value).text.toString()
             if (searchField == "") {
@@ -76,9 +79,12 @@ class IndexFragment : Fragment() {
             }
         }
 
+        //Observe data
         viewModel.showIndexLiveData.observe(viewLifecycleOwner, { record ->
             favoritesViewModel.getIdFavorites.observe(viewLifecycleOwner, {
+                //Create adapter with info from API and ROOM (Favorites)
                 recyclerIndex.adapter = IndexAdapter(record, it) { dataset ->
+                    //Listening to clickListener from the adapter, and update favorites
                     favoritesViewModel.updateFavorite(dataset)
                 }
             })

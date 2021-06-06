@@ -11,14 +11,18 @@ import kotlinx.coroutines.launch
 
 class EpisodeViewModel : ViewModel() {
 
+    //ENUM for API
     enum class EpisodeDetailStatus { LOADING, ERROR, DONE }
 
+    //Livedata from shows
     private val _episodeDetails = MutableLiveData<ShowEpisodesDetails?>()
     val episodeDetails: LiveData<ShowEpisodesDetails?> = _episodeDetails
 
+    //ENUM field status
     private val _episodeDetailsStatus = MutableLiveData<EpisodeDetailStatus>()
 
 
+    //Get episode details from API, based on id
     fun getEpisodeDetails(
         id: Int
     ) {

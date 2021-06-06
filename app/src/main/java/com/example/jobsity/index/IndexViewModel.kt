@@ -8,37 +8,45 @@ import androidx.lifecycle.viewModelScope
 import com.example.jobsity.network.ShowIndex
 import kotlinx.coroutines.launch
 
-enum class ShowIndexStatus { LOADING, ERROR, DONE }
-enum class ShowNameStatus { LOADING, ERROR, DONE }
-
-
 class IndexViewModel : ViewModel() {
 
+    //Enum class for API status
+    enum class ShowIndexStatus { LOADING, ERROR, DONE }
+    enum class ShowNameStatus { LOADING, ERROR, DONE }
+
+    //Always start on first page
     private var _indexPage = 0
 
+    //Page getter
     fun indexPage(): Int {
         return _indexPage
     }
 
+    //Page setter up
     fun indexPageDecrease() {
         _indexPage = _indexPage.dec()
     }
 
+    //Page setter down
     fun indexPageIncrease() {
         _indexPage = _indexPage.inc()
     }
 
+    //Livedata from API
     private val _showIndexLiveData = MutableLiveData<List<ShowIndex>>()
     val showIndexLiveData: LiveData<List<ShowIndex>> = _showIndexLiveData
 
+    //Status from API
     private val _showNameStatus = MutableLiveData<ShowNameStatus>()
     private val _showIndexStatus = MutableLiveData<ShowIndexStatus>()
 
 
+    //Load initial info
     init {
         getShowIndex(_indexPage)
     }
 
+    //Get shows by page from API
     fun getShowIndex(
         page: Int
     ) {
@@ -54,6 +62,7 @@ class IndexViewModel : ViewModel() {
         }
     }
 
+    //Get shows by name from API
     fun getShowNames(
         name: String
     ) {

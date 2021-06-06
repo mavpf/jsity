@@ -4,6 +4,8 @@ import android.app.Application
 import com.example.jobsity.db.FavoritesDatabase
 import com.example.jobsity.db.FavoritesRepository
 
+//Needed for ROOM
+
 class JobsityApplication : Application() {
 
     val database by lazy { FavoritesDatabase.getDatabase(this) }

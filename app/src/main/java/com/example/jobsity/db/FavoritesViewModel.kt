@@ -1,6 +1,5 @@
 package com.example.jobsity.db
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.jobsity.network.Images
 import com.example.jobsity.network.ShowIndex
@@ -8,26 +7,41 @@ import kotlinx.coroutines.launch
 
 class FavoritesViewModel(private val repository: FavoritesRepository) : ViewModel() {
 
+    //Livedata for favorites ID
     val getIdFavorites: LiveData<List<Int>> = repository.getIdFavorites.asLiveData()
 
+    //Livedata for all favorites
     val getAllFavorites: LiveData<List<Favorites>> = repository.getAllFavorites.asLiveData()
 
+    //Function to get favorites names
     fun getNameFavorites(name: String): LiveData<List<Favorites>> =
         repository.getNameFavorites(name).asLiveData()
 
+
+    //Update favorite status
     fun updateFavorite(dataset: ShowIndex) {
-        Log.d("ret", dataset.toString())
         var check: Int
+
+        //Transform data from API format to ROOM format
+        //Two fields, genre and image, are lists, and ROOM doesn't handle lists.
+        //Index View and recycler are working with API data format, so doesn't make sense
+        // to create another view, only because of two fields.
         val favoritesData = transformToFavorites(dataset)
+
         viewModelScope.launch {
+            //Check if a favorite is already saved
+            //Not allowed to have more than one id in the table
+            //So if return 0, means that the app must insert the value in the table
+            //If return one, means that it should be removed
             check = repository.getCountFavorites(dataset.id)
-            Log.d("ret_1", check.toString())
-            Log.d("ret_1.1", favoritesData.toString())
+
+            //If 0, insert
             if (check == 0) {
                 viewModelScope.launch {
                     repository.insertFavorite(favoritesData)
                 }
             } else {
+                //Else, remove
                 viewModelScope.launch {
                     repository.deleteFavorite(favoritesData)
                 }
@@ -35,6 +49,7 @@ class FavoritesViewModel(private val repository: FavoritesRepository) : ViewMode
         }
     }
 
+    //Function to transform ROOM data to API
     fun transformToShowIndex(favorites: List<Favorites>): MutableList<ShowIndex> {
         val finalData = mutableListOf<ShowIndex>()
 
@@ -57,6 +72,7 @@ class FavoritesViewModel(private val repository: FavoritesRepository) : ViewMode
         return finalData
     }
 
+    //Function to transform API data to ROOM
     fun transformToFavorites(showIndex: ShowIndex): Favorites {
 
         return Favorites(

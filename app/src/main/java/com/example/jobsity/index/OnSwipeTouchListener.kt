@@ -7,6 +7,8 @@ import android.view.MotionEvent
 import android.view.View
 import kotlin.math.abs
 
+//Swipe functions. Only right and left (onFling) will be used
+
 internal open class OnSwipeTouchListener(c: Context?) :
     View.OnTouchListener {
     private val gestureDetector: GestureDetector
@@ -19,24 +21,7 @@ internal open class OnSwipeTouchListener(c: Context?) :
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
         private val swipetreshold: Int = 100
         private val swipevelocity: Int = 100
-        override fun onDown(e: MotionEvent): Boolean {
-            return true
-        }
 
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
-            onClick()
-            return super.onSingleTapUp(e)
-        }
-
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            onDoubleClick()
-            return super.onDoubleTap(e)
-        }
-
-        override fun onLongPress(e: MotionEvent) {
-            onLongClick()
-            super.onLongPress(e)
-        }
 
         override fun onFling(
             e1: MotionEvent,
@@ -58,17 +43,6 @@ internal open class OnSwipeTouchListener(c: Context?) :
                             onSwipeLeft()
                         }
                     }
-                } else {
-                    if (abs(diffY) > swipetreshold && abs(
-                            velocityY
-                        ) > swipevelocity
-                    ) {
-                        if (diffY < 0) {
-                            onSwipeUp()
-                        } else {
-                            onSwipeDown()
-                        }
-                    }
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
@@ -79,11 +53,7 @@ internal open class OnSwipeTouchListener(c: Context?) :
 
     open fun onSwipeRight() {}
     open fun onSwipeLeft() {}
-    open fun onSwipeUp() {}
-    open fun onSwipeDown() {}
-    private fun onClick() {}
-    private fun onDoubleClick() {}
-    private fun onLongClick() {}
+
 
     init {
         gestureDetector = GestureDetector(c, GestureListener())

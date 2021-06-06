@@ -17,6 +17,7 @@ import com.example.jobsity.index.IndexAdapter
 
 class FavoritesFragment : Fragment() {
 
+    //Viewmodel for ROOM
     private val viewModel: FavoritesViewModel by viewModels {
         FavoritesViewModelFactory((context?.applicationContext as JobsityApplication).repository)
     }
@@ -32,6 +33,7 @@ class FavoritesFragment : Fragment() {
 
         recyclerIndex = root.findViewById(R.id.main_recycler_view)
 
+        //Get all information from ROOM
         viewModel.getAllFavorites
 
         return root
@@ -42,15 +44,7 @@ class FavoritesFragment : Fragment() {
 
         val searchButton = view.findViewById<Button>(R.id.button_search)
 
-        searchButton.setOnClickListener {
-            val searchField = view.findViewById<EditText>(R.id.search_field_value).text.toString()
-            if (searchField == "") {
-                viewModel.getAllFavorites
-            } else {
-                viewModel.getNameFavorites(searchField)
-            }
-        }
-
+        //Load all favorites
         viewModel.getAllFavorites.observe(viewLifecycleOwner, { record ->
             viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
                 recyclerIndex.adapter =
@@ -58,8 +52,38 @@ class FavoritesFragment : Fragment() {
                         viewModel.updateFavorite(it)
                     }
             })
-
         })
+
+        //Check if search button clicked
+        searchButton.setOnClickListener {
+
+            val searchField = view.findViewById<EditText>(R.id.search_field_value).text.toString()
+            //Without value, get all favorites
+            if (searchField == "") {
+                viewModel.getAllFavorites.observe(viewLifecycleOwner, { record ->
+                    viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
+                        recyclerIndex.adapter =
+                            IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
+                                viewModel.updateFavorite(it)
+                            }
+                    })
+                })
+            } else {
+                //With value, get select info
+                val searchName = "%"+searchField+"%"
+                viewModel.getNameFavorites(searchName).observe(viewLifecycleOwner, { record ->
+                    viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
+                        recyclerIndex.adapter =
+                            IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
+                                viewModel.updateFavorite(it)
+                            }
+                    })
+                })
+            }
+
+        }
+
+
 
 
     }
