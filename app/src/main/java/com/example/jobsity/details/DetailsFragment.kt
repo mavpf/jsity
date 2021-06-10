@@ -2,7 +2,6 @@ package com.example.jobsity.details
 
 import android.os.Bundle
 import android.text.Html
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +61,6 @@ class DetailsFragment : Fragment() {
             detailShowName.text = show?.name
             detailShowGenre.text = show?.genres?.joinToString(", ")
             detailShowSummary.text = Html.fromHtml(show?.summary, Html.FROM_HTML_MODE_COMPACT)
-            detailShowSummary.movementMethod =  ScrollingMovementMethod()
             detailShowScheduleDays.text = show?.schedule?.days?.joinToString("/n")
             detailShowScheduleTime.text = show?.schedule?.time
         })
@@ -72,8 +70,8 @@ class DetailsFragment : Fragment() {
             //Load a spinner with the seasons
             val spinnerData = ArrayAdapter<String>(requireContext(), R.layout.season_spinner)
             episode?.forEach {
-                if (spinnerData.getPosition("Season " + it.season.toString()) == -1) {
-                    spinnerData.add("Season " + it.season.toString())
+                if (spinnerData.getPosition(getString(R.string.season) + it.season.toString()) == -1) {
+                    spinnerData.add(getString(R.string.season) + it.season.toString())
                 }
             }
             seasonSpinner.adapter = spinnerData
@@ -87,7 +85,7 @@ class DetailsFragment : Fragment() {
                     id: Long
                 ) {
                     viewModel.clearEpisodesPerSeason()
-                    val season = seasonSpinner.selectedItem.toString().replace("Season ", "")
+                    val season = seasonSpinner.selectedItem.toString().replace(getString(R.string.season), "")
                     //Based on spinner selection, get specific data in viewmodel
                     episode?.forEach {
                         if (season.toInt() == it.season) {

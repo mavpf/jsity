@@ -49,3 +49,36 @@ data class ShowEpisodes(
     @Json(name = "number") val number: Int,
     @Json(name = "image") val image: Images?
     )
+
+
+data class PersonResult(
+    @Json(name = "person") val person: PersonResultSearch
+)
+
+data class PersonResultSearch(
+    @Json(name = "id") val id: Int,
+    @Json(name = "name") val name: String,
+    @Json(name = "image") val image: Images?
+)
+
+data class Credits(
+    @Json(name = "id") val id: Int,
+    @Json(name = "name") val name: String,
+    @Json(name = "image") val image: Images?,
+    @Json(name = "_embedded") val _embedded: CastCredits?
+)
+data class CastCredits(
+    @Json(name = "castcredits") val castcredits: List<CreditsDetails>
+)
+
+data class CreditsDetails(
+    @Json(name = "_links") val _links: CreditsShow
+)
+
+data class CreditsShow(
+    @Json(name = "show") val show: CreditsHref
+)
+
+data class CreditsHref(
+    @Json(name = "href") val href: String
+)

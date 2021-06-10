@@ -1,12 +1,17 @@
 package com.example.jobsity.index
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -28,16 +33,24 @@ class IndexFragment : Fragment() {
 
     private lateinit var recyclerIndex: RecyclerView
 
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = inflater.inflate(R.layout.fragment_index, container, false)
 
-        recyclerIndex = root.findViewById(R.id.main_recycler_view)
+
+        return inflater.inflate(R.layout.fragment_index, container, false)
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        recyclerIndex = view.findViewById(R.id.main_recycler_view)
+        val searchField = view.findViewById<EditText>(R.id.search_field_value)
 
         //Set SWIPE actions
         recyclerIndex.setOnTouchListener(object : OnSwipeTouchListener(requireContext()) {
@@ -45,6 +58,8 @@ class IndexFragment : Fragment() {
             //Swipe left will increase pages
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
+                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+                view.findViewById<RecyclerView>(R.id.main_recycler_view).visibility = View.INVISIBLE
                 viewModel.indexPageIncrease()
                 viewModel.getShowIndex(viewModel.indexPage())
             }
@@ -54,35 +69,49 @@ class IndexFragment : Fragment() {
             override fun onSwipeRight() {
                 super.onSwipeRight()
                 if (viewModel.indexPage() > 0) {
+                    view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+                    view.findViewById<RecyclerView>(R.id.main_recycler_view).visibility = View.INVISIBLE
                     viewModel.indexPageDecrease()
                     viewModel.getShowIndex(viewModel.indexPage())
                 }
             }
         })
-        return root
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         //Search button
         val searchButton: Button = view.findViewById(R.id.button_search)
 
+
+
         //Search data from search API. If none, return full index
+        //Using button
         searchButton.setOnClickListener {
-            val searchField = view.findViewById<EditText>(R.id.search_field_value).text.toString()
-            if (searchField == "") {
+            view.hideKeyboard()
+            if (searchField.text.toString() == "") {
                 viewModel.getShowIndex(viewModel.indexPage())
             } else {
-                viewModel.getShowNames(searchField)
+                viewModel.getShowNames(searchField.text.toString())
             }
         }
+
+
+        //Using enter key
+        searchField.setOnKeyListener( View.OnKeyListener { v, keyCode, event ->
+            view.hideKeyboard()
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP)
+            {
+                Log.d("ret", "enter")
+                viewModel.getShowNames(searchField.text.toString())
+                return@OnKeyListener true
+            }
+            false
+        })
 
         //Observe data
         viewModel.showIndexLiveData.observe(viewLifecycleOwner, { record ->
             favoritesViewModel.getIdFavorites.observe(viewLifecycleOwner, {
                 //Create adapter with info from API and ROOM (Favorites)
+                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
+                view.findViewById<RecyclerView>(R.id.main_recycler_view).visibility = View.VISIBLE
                 recyclerIndex.adapter = IndexAdapter(record, it) { dataset ->
                     //Listening to clickListener from the adapter, and update favorites
                     favoritesViewModel.updateFavorite(dataset)
@@ -91,6 +120,12 @@ class IndexFragment : Fragment() {
         })
 
 
+    }
+
+
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
 }

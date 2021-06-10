@@ -22,6 +22,10 @@ internal open class OnSwipeTouchListener(c: Context?) :
         private val swipetreshold: Int = 100
         private val swipevelocity: Int = 100
 
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            onClick()
+            return super.onSingleTapUp(e)
+        }
 
         override fun onFling(
             e1: MotionEvent,
@@ -53,6 +57,7 @@ internal open class OnSwipeTouchListener(c: Context?) :
 
     open fun onSwipeRight() {}
     open fun onSwipeLeft() {}
+    open fun onClick(){}
 
 
     init {

@@ -14,4 +14,6 @@
     <string name="summary_not_found">Summary not available.</string>
     <string name="season_not_found">Season not available</string>
     <string name="name_not_found">Name not available</string>
+    <string name="season">"Season "</string>
+    <string name="action_people">People Search</string>
 </resources>
