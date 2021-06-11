@@ -54,6 +54,19 @@ interface ShowIndexApiService {
     suspend fun getEpisodeDetails(
         @Path("episodeId") episodeId: Int
     ): ShowEpisodesDetails
+
+    //Get people
+    @GET("search/people")
+    suspend fun getPeopleName(
+        @Query("q") q: String
+    ): List<PersonResult>
+
+    //Get people participation
+    @GET("people/{id}")
+    suspend fun getPeopleDetails(
+        @Path("id") id: Int,
+        @Query("embed") cast: String
+    ): Credits
 }
 
 object ShowIndexApi {

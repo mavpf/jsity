@@ -47,6 +47,10 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.FavoritesFragment)
                 return true
             }
+            R.id.action_people -> {
+                navController.navigate(R.id.PeopleFragment)
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

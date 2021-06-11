@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_IndexFragment_to_favoritesFragment"
             app:destination="@id/FavoritesFragment" />
+        <action
+            android:id="@+id/action_IndexFragment_to_peopleFragment"
+            app:destination="@id/PeopleFragment" />
     </fragment>
     <fragment
         android:id="@+id/ShowFragment"
@@ -48,5 +51,24 @@
         <action
             android:id="@+id/action_favoritesFragment_to_EpisodeFragment"
             app:destination="@id/EpisodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/PeopleFragment"
+        android:name="com.example.jobsity.people.PeopleFragment"
+        android:label="PeopleFragment" >
+        <action
+            android:id="@+id/action_peopleFragment_to_IndexFragment"
+            app:destination="@id/IndexFragment" />
+        <action
+            android:id="@+id/action_PeopleFragment_to_PeopleDetailsFragment"
+            app:destination="@id/PeopleDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/PeopleDetailsFragment"
+        android:name="com.example.jobsity.peopledetails.PeopleDetailsFragment"
+        android:label="PeopleDetailsFragment" >
+        <action
+            android:id="@+id/action_PeopleDetailsFragment_to_PeopleFragment"
+            app:destination="@id/PeopleFragment" />
     </fragment>
 </navigation>
