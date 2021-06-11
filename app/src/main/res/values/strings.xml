@@ -6,6 +6,8 @@
     <string name="details_fragment_label">Show Details</string>
     <string name="episode_fragment_label">Episode Details</string>
     <string name="favorites_fragment_label">Favorites</string>
+    <string name="people_fragment_label">People Search</string>
+    <string name="people_details_fragment_label">People Information</string>
     <string name="search_field_title">"Search: "</string>
     <string name="time_title">Schedule:</string>
     <string name="time_at">" at "</string>

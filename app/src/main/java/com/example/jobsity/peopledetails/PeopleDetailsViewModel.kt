@@ -35,25 +35,29 @@ class PeopleDetailsViewModel : ViewModel() {
         }
     }
 
-    fun getCasting(id: Int) {
+    fun getCasting(id: List<String>) {
         val tempData = mutableListOf<ShowIndex>()
         viewModelScope.launch {
-            _statusCastDetails.LOADING
-            try {
-                val temp =  ShowIndexApi.retrofitService.getShowDetail(id)
-                tempData.add(
-                    ShowIndex(
-                        temp.id,
-                        temp.name,
-                        temp.genres,
-                        temp?.image
+            id.forEach {
+                _statusCastDetails.LOADING
+                try {
+                    val temp = ShowIndexApi.retrofitService.getShowDetail(it.toInt())
+                    tempData.add(
+                        ShowIndex(
+                            temp.id,
+                            temp.name,
+                            temp.genres,
+                            temp?.image
+                        )
                     )
-                )
-                _statusCastDetails.DONE
-            } catch (e: java.lang.Exception) {
-                _statusCastDetails.ERROR
-                Log.d("ret_err", e.toString())
+                    Log.d("ret_te", temp.toString())
+                    _statusCastDetails.DONE
+                } catch (e: java.lang.Exception) {
+                    _statusCastDetails.ERROR
+                    Log.d("ret_err", e.toString())
+                }
             }
+            _castDetailsData.value = tempData
         }
     }
 }

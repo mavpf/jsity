@@ -46,6 +46,7 @@ class PeopleDetailsFragment: Fragment() {
         viewModel.getPeopleDetails(id.toInt())
 
         viewModel.peopleDetailsData.observe(viewLifecycleOwner, {
+            val idList = mutableListOf<String>()
             if (it?.image == null){
                 personPhoto.setImageResource(R.drawable.ic_no_photo)
             } else {
@@ -55,9 +56,9 @@ class PeopleDetailsFragment: Fragment() {
             if (it != null) {
                 it._embedded?.castcredits?.forEach {
                     val path = it._links.show.href
-                    val idStr = path.substring(path.lastIndexOf('/') + 1)
-                    viewModel.getCasting(idStr.toInt())
+                    idList.add(path.substring(path.lastIndexOf('/') + 1))
                 }
+                viewModel.getCasting(idList)
             }
         })
 

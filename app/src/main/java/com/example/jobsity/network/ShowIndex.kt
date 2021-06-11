@@ -30,7 +30,7 @@ data class ShowDetails(
     @Json(name = "name") val name: String,
     @Json(name = "genres") val genres: List<String>,
     @Json(name = "image") val image: Images?,
-    @Json(name = "summary") val summary: String,
+    @Json(name = "summary") val summary: String?,
     @Json(name = "schedule") val schedule: Schedule
 )
 

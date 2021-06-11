@@ -55,7 +55,7 @@
     <fragment
         android:id="@+id/PeopleFragment"
         android:name="com.example.jobsity.people.PeopleFragment"
-        android:label="PeopleFragment" >
+        android:label="@string/people_fragment_label">
         <action
             android:id="@+id/action_peopleFragment_to_IndexFragment"
             app:destination="@id/IndexFragment" />
@@ -66,7 +66,7 @@
     <fragment
         android:id="@+id/PeopleDetailsFragment"
         android:name="com.example.jobsity.peopledetails.PeopleDetailsFragment"
-        android:label="PeopleDetailsFragment" >
+        android:label="@string/people_details_fragment_label">
         <action
             android:id="@+id/action_PeopleDetailsFragment_to_PeopleFragment"
             app:destination="@id/PeopleFragment" />
