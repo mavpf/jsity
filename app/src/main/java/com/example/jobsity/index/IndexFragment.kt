@@ -12,13 +12,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.R
 import com.example.jobsity.db.FavoritesViewModel
 import com.example.jobsity.db.FavoritesViewModelFactory
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -50,6 +53,16 @@ class IndexFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerIndex = view.findViewById(R.id.main_recycler_view)
+
+        var loading = true
+        var pastVisiblesItems = 0
+        var visibleItemCount = 0
+        var totalItemCount = 0
+
+        val mLayoutManager = LinearLayoutManager(requireContext())
+
+        recyclerIndex.layoutManager = mLayoutManager
+
         val searchField = view.findViewById<EditText>(R.id.search_field_value)
 
         //Set SWIPE actions
@@ -107,16 +120,36 @@ class IndexFragment : Fragment() {
         })
 
         //Observe data
-        viewModel.showIndexLiveData.observe(viewLifecycleOwner, { record ->
+        viewModel.showIndexStatus.observe(viewLifecycleOwner, { record ->
             favoritesViewModel.getIdFavorites.observe(viewLifecycleOwner, {
                 //Create adapter with info from API and ROOM (Favorites)
                 view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
                 view.findViewById<RecyclerView>(R.id.main_recycler_view).visibility = View.VISIBLE
-                recyclerIndex.adapter = IndexAdapter(record, it) { dataset ->
+                recyclerIndex.adapter = IndexAdapter(viewModel.showIndexData, it) { dataset ->
                     //Listening to clickListener from the adapter, and update favorites
                     favoritesViewModel.updateFavorite(dataset)
                 }
+                recyclerIndex.scrollToPosition(totalItemCount - 2)
             })
+        })
+
+        recyclerIndex.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) { //check for scroll down
+                    visibleItemCount = mLayoutManager.childCount
+                    totalItemCount = mLayoutManager.itemCount
+                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition()
+                    if (loading) {
+                        if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
+                            loading = false
+                            Log.d("ret", "Last Item Wow !")
+                            viewModel.indexPageIncrease()
+                            viewModel.getShowIndex(viewModel.indexPage())
+                            loading = true
+                        }
+                    }
+                }
+            }
         })
 
 

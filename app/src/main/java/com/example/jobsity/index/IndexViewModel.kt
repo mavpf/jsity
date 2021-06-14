@@ -39,6 +39,11 @@ class IndexViewModel : ViewModel() {
     //Status from API
     private val _showNameStatus = MutableLiveData<ShowNameStatus>()
     private val _showIndexStatus = MutableLiveData<ShowIndexStatus>()
+    val showIndexStatus: LiveData<ShowIndexStatus> = _showIndexStatus
+
+    //Teste
+    private val _showIndexData: MutableList<ShowIndex> = mutableListOf()
+    val showIndexData = _showIndexData
 
 
     //Load initial info
@@ -53,7 +58,7 @@ class IndexViewModel : ViewModel() {
         viewModelScope.launch {
             ShowIndexStatus.LOADING
             try {
-                _showIndexLiveData.value = ShowIndexApi.retrofitService.getIndex(page)
+                _showIndexData.addAll(ShowIndexApi.retrofitService.getIndex(page))
                 _showIndexStatus.value = ShowIndexStatus.DONE
             } catch (e: Exception) {
                 _showIndexStatus.value = ShowIndexStatus.ERROR
