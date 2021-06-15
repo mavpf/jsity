@@ -6,6 +6,7 @@
     android:layout_margin="@dimen/card_margin"
     android:backgroundTint="@color/medium_gray"
     android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
@@ -50,19 +51,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             style="@style/toggleButton"
-            />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/show_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/red"
-            android:tintMode="src_atop"
-            android:foregroundTint="@color/red"
-            app:fabSize="mini"
-            android:src="@drawable/ic_add_sign"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

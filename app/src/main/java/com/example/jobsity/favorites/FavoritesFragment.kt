@@ -2,6 +2,8 @@ package com.example.jobsity.favorites
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.R
@@ -27,6 +30,7 @@ class FavoritesFragment : Fragment() {
     }
 
     private lateinit var recyclerIndex: RecyclerView
+    private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,13 +55,21 @@ class FavoritesFragment : Fragment() {
         val searchButton = view.findViewById<Button>(R.id.button_search)
         val searchField = view.findViewById<EditText>(R.id.search_field_value)
 
+        mLayoutManager = LinearLayoutManager(requireContext())
+        recyclerIndex.layoutManager = mLayoutManager
+
         //Load all favorites
         viewModel.getAllFavorites.observe(viewLifecycleOwner, { record ->
             viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
+                //Save current recyclerview state
+                val recyclerViewState: Parcelable? = mLayoutManager.onSaveInstanceState()
+                Log.d("ret", "aqui")
                 recyclerIndex.adapter =
                     IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
                         viewModel.updateFavorite(it)
                     }
+                //Restore recyclerview state
+                mLayoutManager.onRestoreInstanceState(recyclerViewState)
             })
         })
 
@@ -68,10 +80,9 @@ class FavoritesFragment : Fragment() {
         }
 
         //Using enter key
-        searchField.setOnKeyListener( View.OnKeyListener { v, keyCode, event ->
+        searchField.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             view.hideKeyboard()
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP)
-            {
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 getFavorites(searchField)
                 return@OnKeyListener true
             }
@@ -84,25 +95,29 @@ class FavoritesFragment : Fragment() {
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    private fun getFavorites(searchField: EditText){
+    private fun getFavorites(searchField: EditText) {
         if (searchField.text.toString() == "") {
             viewModel.getAllFavorites.observe(viewLifecycleOwner, { record ->
                 viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
+                    val recyclerViewState: Parcelable? = mLayoutManager.onSaveInstanceState()
                     recyclerIndex.adapter =
                         IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
                             viewModel.updateFavorite(it)
                         }
+                    mLayoutManager.onRestoreInstanceState(recyclerViewState)
                 })
             })
         } else {
             //With value, get select info
-            val searchName = "%"+searchField.text.toString()+"%"
+            val searchName = "%" + searchField.text.toString() + "%"
             viewModel.getNameFavorites(searchName).observe(viewLifecycleOwner, { record ->
                 viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
+                    val recyclerViewState: Parcelable? = mLayoutManager.onSaveInstanceState()
                     recyclerIndex.adapter =
                         IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
                             viewModel.updateFavorite(it)
                         }
+                    mLayoutManager.onRestoreInstanceState(recyclerViewState)
                 })
             })
         }

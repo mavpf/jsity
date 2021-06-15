@@ -15,7 +15,7 @@ class IndexViewModel : ViewModel() {
     enum class ShowNameStatus { LOADING, ERROR, DONE }
 
     //Always start on first page
-    private var _indexPage = 0
+    var _indexPage = 0
 
     //Page getter
     fun indexPage(): Int {
@@ -62,7 +62,6 @@ class IndexViewModel : ViewModel() {
                 _showIndexStatus.value = ShowIndexStatus.DONE
             } catch (e: Exception) {
                 _showIndexStatus.value = ShowIndexStatus.ERROR
-                _showIndexLiveData.value = listOf()
             }
         }
     }
@@ -72,18 +71,17 @@ class IndexViewModel : ViewModel() {
         name: String
     ) {
         viewModelScope.launch {
-            ShowNameStatus.LOADING
+            _showIndexData.clear()
+            ShowIndexStatus.LOADING
             try {
                 val searchList: MutableList<ShowIndex> = mutableListOf()
-
                 ShowIndexApi.retrofitService.getShowNames(name).forEach {
                     searchList.add(it.show)
                 }
-                _showIndexLiveData.value = searchList
-                _showNameStatus.value = ShowNameStatus.DONE
+                _showIndexData.addAll(searchList)
+                _showIndexStatus.value = ShowIndexStatus.DONE
             } catch (e: Exception) {
-                _showNameStatus.value = ShowNameStatus.ERROR
-                _showIndexLiveData.value = listOf()
+                _showIndexStatus.value = ShowIndexStatus.ERROR
             }
         }
     }

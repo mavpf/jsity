@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.R
 import com.example.jobsity.network.ShowIndex
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 
@@ -26,7 +27,7 @@ class PeopleDetailsAdapter(
         var showGenre: TextView = view.findViewById(R.id.show_genre)
         var showPoster: ImageView = view.findViewById(R.id.show_poster)
         var preferredIcon: ToggleButton = view.findViewById(R.id.show_preferred)
-        var detailButton: FloatingActionButton = view.findViewById(R.id.show_details)
+        var detailButton: MaterialCardView = view.findViewById(R.id.show_card)
     }
 
     override fun onCreateViewHolder(
