@@ -3,68 +3,63 @@ package com.example.jobsity.favorites
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
-import com.example.jobsity.R
+import com.example.jobsity.databinding.FragmentIndexBinding
 import com.example.jobsity.db.FavoritesViewModel
 import com.example.jobsity.db.FavoritesViewModelFactory
 import com.example.jobsity.index.IndexAdapter
 
 class FavoritesFragment : Fragment() {
 
-    //Viewmodel for ROOM
+    //viewModel for ROOM
     private val viewModel: FavoritesViewModel by viewModels {
         FavoritesViewModelFactory((context?.applicationContext as JobsityApplication).repository)
     }
 
-    private lateinit var recyclerIndex: RecyclerView
+    private var _binding: FragmentIndexBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_index, container, false)
-
-        recyclerIndex = root.findViewById(R.id.main_recycler_view)
+    ): View {
+        //val root = inflater.inflate(R.layout.fragment_index, container, false)
+        _binding = FragmentIndexBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         //Get all information from ROOM
         viewModel.getAllFavorites
 
-        return root
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
-
-        val searchButton = view.findViewById<Button>(R.id.button_search)
-        val searchField = view.findViewById<EditText>(R.id.search_field_value)
+        binding.progressBar.visibility = View.GONE
 
         mLayoutManager = LinearLayoutManager(requireContext())
-        recyclerIndex.layoutManager = mLayoutManager
+        binding.mainRecyclerView.layoutManager = mLayoutManager
 
         //Load all favorites
         viewModel.getAllFavorites.observe(viewLifecycleOwner, { record ->
             viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
                 //Save current recyclerview state
                 val recyclerViewState: Parcelable? = mLayoutManager.onSaveInstanceState()
-                Log.d("ret", "aqui")
-                recyclerIndex.adapter =
+                binding.mainRecyclerView.adapter =
                     IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
                         viewModel.updateFavorite(it)
                     }
@@ -74,16 +69,16 @@ class FavoritesFragment : Fragment() {
         })
 
         //Check if search button clicked
-        searchButton.setOnClickListener {
+        binding.buttonSearch.setOnClickListener {
             view.hideKeyboard()
-            getFavorites(searchField)
+            getFavorites(binding.searchFieldValue)
         }
 
         //Using enter key
-        searchField.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        binding.searchFieldValue.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
             view.hideKeyboard()
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                getFavorites(searchField)
+                getFavorites(binding.searchFieldValue)
                 return@OnKeyListener true
             }
             false
@@ -96,11 +91,11 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun getFavorites(searchField: EditText) {
-        if (searchField.text.toString() == "") {
+        if (binding.searchFieldValue.text.toString() == "") {
             viewModel.getAllFavorites.observe(viewLifecycleOwner, { record ->
                 viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
                     val recyclerViewState: Parcelable? = mLayoutManager.onSaveInstanceState()
-                    recyclerIndex.adapter =
+                    binding.mainRecyclerView.adapter =
                         IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
                             viewModel.updateFavorite(it)
                         }
@@ -113,7 +108,7 @@ class FavoritesFragment : Fragment() {
             viewModel.getNameFavorites(searchName).observe(viewLifecycleOwner, { record ->
                 viewModel.getIdFavorites.observe(viewLifecycleOwner, { favoriteId ->
                     val recyclerViewState: Parcelable? = mLayoutManager.onSaveInstanceState()
-                    recyclerIndex.adapter =
+                    binding.mainRecyclerView.adapter =
                         IndexAdapter(viewModel.transformToShowIndex(record), favoriteId) {
                             viewModel.updateFavorite(it)
                         }

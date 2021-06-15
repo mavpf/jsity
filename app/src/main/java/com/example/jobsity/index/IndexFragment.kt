@@ -3,21 +3,17 @@ package com.example.jobsity.index
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
-import com.example.jobsity.R
+import com.example.jobsity.databinding.FragmentIndexBinding
 import com.example.jobsity.db.FavoritesViewModel
 import com.example.jobsity.db.FavoritesViewModelFactory
 
@@ -33,16 +29,18 @@ class IndexFragment : Fragment() {
         FavoritesViewModelFactory((context?.applicationContext as JobsityApplication).repository)
     }
 
-    private lateinit var recyclerIndex: RecyclerView
+    //View Binding
+    private var _binding: FragmentIndexBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        _binding = FragmentIndexBinding.inflate(inflater, container, false)
 
-
-        return inflater.inflate(R.layout.fragment_index, container, false)
+        return binding.root
 
     }
 
@@ -50,52 +48,44 @@ class IndexFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //Recycler view variables
-        recyclerIndex = view.findViewById(R.id.main_recycler_view)
         var loading = true
         var pastVisibleItems: Int
         var visibleItemCount: Int
-        var totalItemCount = 0
+        var totalItemCount: Int
         val mLayoutManager = LinearLayoutManager(requireContext())
-        recyclerIndex.layoutManager = mLayoutManager
-
-        //Search field
-        val searchField = view.findViewById<EditText>(R.id.search_field_value)
-
-        //Search button
-        val searchButton: Button = view.findViewById(R.id.button_search)
+        binding.mainRecyclerView.layoutManager = mLayoutManager
 
         //Search flag
-        var searchFlag: Boolean = false
+        var searchFlag = false
 
-        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
-        recyclerIndex.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.mainRecyclerView.visibility = View.INVISIBLE
 
         //Search data from search API. If none, return full index
         //Using button
-        searchButton.setOnClickListener {
+        binding.buttonSearch.setOnClickListener {
             view.hideKeyboard()
-            if (searchField.text.toString() == "") {
-                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
-                recyclerIndex.visibility = View.INVISIBLE
+            if (binding.searchFieldValue.text.toString() == "") {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.mainRecyclerView.visibility = View.INVISIBLE
                 viewModel.showIndexData.clear()
                 viewModel._indexPage = 0
                 searchFlag = false
                 viewModel.getShowIndex(viewModel.indexPage())
             } else {
-                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
-                recyclerIndex.visibility = View.INVISIBLE
+                binding.progressBar.visibility = View.VISIBLE
+                binding.mainRecyclerView.visibility = View.INVISIBLE
                 searchFlag = true
-                viewModel.getShowNames(searchField.text.toString())
+                viewModel.getShowNames(binding.searchFieldValue.text.toString())
             }
         }
 
 
         //Using enter key
-        searchField.setOnKeyListener( View.OnKeyListener { _, keyCode, event ->
+        binding.searchFieldValue.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
             view.hideKeyboard()
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP)
-            {
-                if (searchField.text.toString() == "") {
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                if (binding.searchFieldValue.text.toString() == "") {
                     viewModel.showIndexData.clear()
                     viewModel._indexPage = 0
                     searchFlag = false
@@ -103,7 +93,7 @@ class IndexFragment : Fragment() {
                     return@OnKeyListener true
                 } else {
                     searchFlag = true
-                    viewModel.getShowNames(searchField.text.toString())
+                    viewModel.getShowNames(binding.searchFieldValue.text.toString())
                     return@OnKeyListener true
                 }
             }
@@ -115,21 +105,22 @@ class IndexFragment : Fragment() {
             favoritesViewModel.getIdFavorites.observe(viewLifecycleOwner, {
                 //Create adapter with info from API and ROOM (Favorites)
                 //Hide progressbar
-                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
-                recyclerIndex.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.GONE
+                binding.mainRecyclerView.visibility = View.VISIBLE
                 //Save current recyclerview state
                 val recyclerViewState: Parcelable? = mLayoutManager.onSaveInstanceState()
-                recyclerIndex.adapter = IndexAdapter(viewModel.showIndexData, it) { dataset ->
-                    //Listening to clickListener from the adapter, and update favorites
-                    favoritesViewModel.updateFavorite(dataset)
-                }
+                binding.mainRecyclerView.adapter =
+                    IndexAdapter(viewModel.showIndexData, it) { dataset ->
+                        //Listening to clickListener from the adapter, and update favorites
+                        favoritesViewModel.updateFavorite(dataset)
+                    }
                 //Restore recyclerview state
                 mLayoutManager.onRestoreInstanceState(recyclerViewState)
             })
         })
 
         //Listen to recyclerview scroll, and add more data at the end
-        recyclerIndex.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.mainRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (!searchFlag) {
                     if (dy > 0) { //check for scroll down
@@ -150,6 +141,11 @@ class IndexFragment : Fragment() {
         })
 
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     //Function to Hide Keyboard when search is done

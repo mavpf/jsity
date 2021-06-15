@@ -5,18 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.R
+import com.example.jobsity.databinding.FragmentPeopleDetailsBinding
 import com.example.jobsity.db.FavoritesViewModel
 import com.example.jobsity.db.FavoritesViewModelFactory
 import com.squareup.picasso.Picasso
 
-class PeopleDetailsFragment: Fragment() {
+class PeopleDetailsFragment : Fragment() {
 
     val viewModel: PeopleDetailsViewModel by viewModels()
 
@@ -24,14 +22,17 @@ class PeopleDetailsFragment: Fragment() {
         FavoritesViewModelFactory((context?.applicationContext as JobsityApplication).repository)
     }
 
+    private var _binding: FragmentPeopleDetailsBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_people_details, container, false)
+    ): View {
+        _binding = FragmentPeopleDetailsBinding.inflate(inflater, container, false)
 
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,22 +40,22 @@ class PeopleDetailsFragment: Fragment() {
 
         val id = arguments?.get("id").toString()
 
-        val personPhoto = view.findViewById<ImageView>(R.id.people_detail_photo)
-        val personName = view.findViewById<TextView>(R.id.people_detail_name)
-        val personRecyclerView = view.findViewById<RecyclerView>(R.id.person_recyclerview)
+        //val personPhoto = view.findViewById<ImageView>(R.id.people_detail_photo)
+        //val personName = view.findViewById<TextView>(R.id.people_detail_name)
+        //val personRecyclerView = view.findViewById<RecyclerView>(R.id.person_recyclerview)
 
         viewModel.getPeopleDetails(id.toInt())
 
-        viewModel.peopleDetailsData.observe(viewLifecycleOwner, {
+        viewModel.peopleDetailsData.observe(viewLifecycleOwner, { credits ->
             val idList = mutableListOf<String>()
-            if (it?.image == null){
-                personPhoto.setImageResource(R.drawable.ic_no_photo)
+            if (credits?.image == null) {
+                binding.peopleDetailPhoto.setImageResource(R.drawable.ic_no_photo)
             } else {
-                Picasso.get().load(it.image?.medium).into(personPhoto)
+                Picasso.get().load(credits.image.medium).into(binding.peopleDetailPhoto)
             }
-            personName.text = it?.name
-            if (it != null) {
-                it._embedded?.castcredits?.forEach {
+            binding.peopleDetailName.text = credits?.name
+            if (credits != null) {
+                credits._embedded?.castcredits?.forEach {
                     val path = it._links.show.href
                     idList.add(path.substring(path.lastIndexOf('/') + 1))
                 }
@@ -65,10 +66,11 @@ class PeopleDetailsFragment: Fragment() {
         viewModel.castDetailsData.observe(viewLifecycleOwner, { record ->
             Log.d("ret_d", record.toString())
             favoritesViewModel.getIdFavorites.observe(viewLifecycleOwner, {
-                personRecyclerView.adapter = PeopleDetailsAdapter(
+                binding.personRecyclerview.adapter = PeopleDetailsAdapter(
                     record,
-                    it) { dataset->
-                        favoritesViewModel.updateFavorite(dataset)
+                    it
+                ) { dataset ->
+                    favoritesViewModel.updateFavorite(dataset)
                 }
             })
 

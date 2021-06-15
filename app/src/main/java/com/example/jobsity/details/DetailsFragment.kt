@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.R
+import com.example.jobsity.databinding.FragmentDetailsBinding
 import com.squareup.picasso.Picasso
 
 
@@ -17,12 +17,17 @@ class DetailsFragment : Fragment() {
 
     private val viewModel: DetailsViewModel by viewModels()
 
+    private var _binding: FragmentDetailsBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        val root = inflater.inflate(R.layout.fragment_details, container, false)
+        //val root = inflater.inflate(R.layout.fragment_details, container, false)
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         //Receive arguments from previous fragment, in order to identify the show.
         val id = arguments?.getString("id")?.toInt()!!
@@ -32,23 +37,23 @@ class DetailsFragment : Fragment() {
         //Get episodes and seasons from the show
         viewModel.getShowEpisodes(id)
 
-        return root
+        return view
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         //View Show
-        val detailPosterImage: ImageView = view.findViewById(R.id.detail_poster_image)
-        val detailShowName: TextView = view.findViewById(R.id.detail_show_name)
-        val detailShowGenre: TextView = view.findViewById(R.id.detail_show_genre)
-        val detailShowSummary: TextView = view.findViewById(R.id.detail_show_summary)
-        val detailShowScheduleTime: TextView = view.findViewById(R.id.detail_show_schedule_time)
-        val detailShowScheduleDays: TextView = view.findViewById(R.id.detail_show_schedule_days)
+        //val detailPosterImage: ImageView = view.findViewById(R.id.detail_poster_image)
+        //val detailShowName: TextView = view.findViewById(R.id.detail_show_name)
+        //val detailShowGenre: TextView = view.findViewById(R.id.detail_show_genre)
+        //val detailShowSummary: TextView = view.findViewById(R.id.detail_show_summary)
+        //val detailShowScheduleTime: TextView = view.findViewById(R.id.detail_show_schedule_time)
+        //val detailShowScheduleDays: TextView = view.findViewById(R.id.detail_show_schedule_days)
 
         //View Episodes
-        val episodesRecyclerView: RecyclerView = view.findViewById(R.id.episodes_recycler_view)
-        val seasonSpinner: Spinner = view.findViewById(R.id.season_spinner)
+        //val episodesRecyclerView: RecyclerView = view.findViewById(R.id.episodes_recycler_view)
+        //val seasonSpinner: Spinner = view.findViewById(R.id.season_spinner)
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,12 +62,13 @@ class DetailsFragment : Fragment() {
             Picasso.get()
                 .load(show?.image?.original)
                 .resize(340, 500)
-                .into(detailPosterImage)
-            detailShowName.text = show?.name
-            detailShowGenre.text = show?.genres?.joinToString(", ")
-            detailShowSummary.text = Html.fromHtml(show?.summary, Html.FROM_HTML_MODE_COMPACT)
-            detailShowScheduleDays.text = show?.schedule?.days?.joinToString("/n")
-            detailShowScheduleTime.text = show?.schedule?.time
+                .into(binding.detailPosterImage)
+            binding.detailShowName.text = show?.name
+            binding.detailShowGenre.text = show?.genres?.joinToString(", ")
+            binding.detailShowSummary.text =
+                Html.fromHtml(show?.summary, Html.FROM_HTML_MODE_COMPACT)
+            binding.detailShowScheduleDays.text = show?.schedule?.days?.joinToString("/n")
+            binding.detailShowScheduleTime.text = show?.schedule?.time
         })
 
         //Get season and episodes data
@@ -74,31 +80,34 @@ class DetailsFragment : Fragment() {
                     spinnerData.add(getString(R.string.season) + it.season.toString())
                 }
             }
-            seasonSpinner.adapter = spinnerData
+            binding.seasonSpinner.adapter = spinnerData
 
             //Based on spinner selection, show the episodes from the season
-            seasonSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    viewModel.clearEpisodesPerSeason()
-                    val season = seasonSpinner.selectedItem.toString().replace(getString(R.string.season), "")
-                    //Based on spinner selection, get specific data in viewmodel
-                    episode?.forEach {
-                        if (season.toInt() == it.season) {
-                            viewModel.addEpisodesPerSeason(it)
+            binding.seasonSpinner.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        viewModel.clearEpisodesPerSeason()
+                        val season = binding.seasonSpinner.selectedItem.toString()
+                            .replace(getString(R.string.season), "")
+                        //Based on spinner selection, get specific data in viewModel
+                        episode?.forEach {
+                            if (season.toInt() == it.season) {
+                                viewModel.addEpisodesPerSeason(it)
+                            }
                         }
+                        binding.episodesRecyclerView.adapter =
+                            DetailsAdapter(viewModel.getEpisodesPerSeason())
                     }
-                    episodesRecyclerView.adapter = DetailsAdapter(viewModel.getEpisodesPerSeason())
-                }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
 
-            }
+                }
         })
 
     }

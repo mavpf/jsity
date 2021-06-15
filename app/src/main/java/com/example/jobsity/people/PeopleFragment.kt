@@ -7,59 +7,56 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
-import com.example.jobsity.R
+import com.example.jobsity.databinding.FragmentIndexBinding
 
-class PeopleFragment: Fragment() {
+class PeopleFragment : Fragment() {
 
     private val viewModel: PeopleViewModel by viewModels()
+
+    private var _binding: FragmentIndexBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_index, container, false)
+    ): View {
+        //val root = inflater.inflate(R.layout.fragment_index, container, false)
+        _binding = FragmentIndexBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        root.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
 
-        return root
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recyclerPeople = view.findViewById<RecyclerView>(R.id.main_recycler_view)
-        val searchButton = view.findViewById<Button>(R.id.button_search)
-        val searchText = view.findViewById<EditText>(R.id.search_field_value)
 
-        searchButton.setOnClickListener {
+        binding.buttonSearch.setOnClickListener {
             view.hideKeyboard()
-            viewModel.searchPerson(searchText.text.toString())
+            viewModel.searchPerson(binding.searchFieldValue.text.toString())
         }
 
-        searchText.setOnKeyListener( View.OnKeyListener { v, keyCode, event ->
+        binding.searchFieldValue.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
             view.hideKeyboard()
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action ==KeyEvent.ACTION_UP)
-            {
-                viewModel.searchPerson(searchText.text.toString())
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                viewModel.searchPerson(binding.searchFieldValue.text.toString())
                 return@OnKeyListener true
             }
             false
         })
 
         viewModel.personData.observe(viewLifecycleOwner, {
-            recyclerPeople.visibility = View.VISIBLE
-            recyclerPeople.adapter = PeopleAdapter(it)
+            binding.mainRecyclerView.visibility = View.VISIBLE
+            binding.mainRecyclerView.adapter = PeopleAdapter(it)
         })
 
     }
 
-    fun View.hideKeyboard() {
+    private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
