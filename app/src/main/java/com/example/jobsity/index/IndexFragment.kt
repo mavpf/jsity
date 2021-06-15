@@ -67,16 +67,23 @@ class IndexFragment : Fragment() {
         //Search flag
         var searchFlag: Boolean = false
 
+        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+        recyclerIndex.visibility = View.INVISIBLE
+
         //Search data from search API. If none, return full index
         //Using button
         searchButton.setOnClickListener {
             view.hideKeyboard()
             if (searchField.text.toString() == "") {
+                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+                recyclerIndex.visibility = View.INVISIBLE
                 viewModel.showIndexData.clear()
                 viewModel._indexPage = 0
                 searchFlag = false
                 viewModel.getShowIndex(viewModel.indexPage())
             } else {
+                view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+                recyclerIndex.visibility = View.INVISIBLE
                 searchFlag = true
                 viewModel.getShowNames(searchField.text.toString())
             }
@@ -102,9 +109,6 @@ class IndexFragment : Fragment() {
             }
             false
         })
-
-        view.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
-        recyclerIndex.visibility = View.INVISIBLE
 
         //Observe data
         viewModel.showIndexStatus.observe(viewLifecycleOwner, {
