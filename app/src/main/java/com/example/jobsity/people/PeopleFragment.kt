@@ -18,6 +18,7 @@ class PeopleFragment : Fragment() {
     private var _binding: FragmentIndexBinding? = null
     private val binding get() = _binding!!
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
