@@ -43,17 +43,6 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        //View Show
-        //val detailPosterImage: ImageView = view.findViewById(R.id.detail_poster_image)
-        //val detailShowName: TextView = view.findViewById(R.id.detail_show_name)
-        //val detailShowGenre: TextView = view.findViewById(R.id.detail_show_genre)
-        //val detailShowSummary: TextView = view.findViewById(R.id.detail_show_summary)
-        //val detailShowScheduleTime: TextView = view.findViewById(R.id.detail_show_schedule_time)
-        //val detailShowScheduleDays: TextView = view.findViewById(R.id.detail_show_schedule_days)
-
-        //View Episodes
-        //val episodesRecyclerView: RecyclerView = view.findViewById(R.id.episodes_recycler_view)
-        //val seasonSpinner: Spinner = view.findViewById(R.id.season_spinner)
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -110,6 +99,11 @@ class DetailsFragment : Fragment() {
                 }
         })
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
