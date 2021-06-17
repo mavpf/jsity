@@ -1,14 +1,57 @@
 package com.example.jobsity.index
 
-import ShowIndexApi
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.example.jobsity.db.Favorites
 import com.example.jobsity.network.ShowIndex
 import kotlinx.coroutines.launch
 
-class IndexViewModel : ViewModel() {
+class IndexViewModel(private val repository: IndexRoomRepository) : ViewModel() {
+
+    //Livedata for favorites ID
+    val getIdFavorites: LiveData<List<Int>> = repository.getIdFavorites.asLiveData()
+
+    fun updateFavorite(dataset: ShowIndex) {
+        var check: Int
+
+        //Transform data from API format to ROOM format
+        //Two fields, genre and image, are lists, and ROOM doesn't handle lists.
+        //Index View and recycler are working with API data format, so doesn't make sense
+        // to create another view, only because of two fields.
+        val favoritesData = transformToFavorites(dataset)
+
+        viewModelScope.launch {
+            //Check if a favorite is already saved
+            //Not allowed to have more than one id in the table
+            //So if return 0, means that the app must insert the value in the table
+            //If return one, means that it should be removed
+            check = repository.getCountFavorites(dataset.id)
+
+            //If 0, insert
+            if (check == 0) {
+                viewModelScope.launch {
+                    repository.insertFavorite(favoritesData)
+                }
+            } else {
+                //Else, remove
+                viewModelScope.launch {
+                    repository.deleteFavorite(favoritesData)
+                }
+            }
+        }
+    }
+
+    //Function to transform API data to ROOM
+    fun transformToFavorites(showIndex: ShowIndex): Favorites {
+
+        return Favorites(
+            showIndex.id,
+            showIndex.name,
+            showIndex.genres.joinToString(", "),
+            showIndex.image?.medium.toString()
+        )
+    }
+
+
 
     //Enum class for API status
     enum class ShowIndexStatus { LOADING, ERROR, DONE }
@@ -22,12 +65,8 @@ class IndexViewModel : ViewModel() {
         return _indexPage
     }
 
-    //Page setter up
-    fun indexPageDecrease() {
-        _indexPage = _indexPage.dec()
-    }
 
-    //Page setter down
+    //Page setter up
     fun indexPageIncrease() {
         _indexPage = _indexPage.inc()
     }
@@ -51,14 +90,14 @@ class IndexViewModel : ViewModel() {
         getShowIndex(_indexPage)
     }
 
-    //Get shows by page from API
+    //Get shows by page from repository
     fun getShowIndex(
         page: Int
     ) {
         viewModelScope.launch {
             ShowIndexStatus.LOADING
             try {
-                _showIndexData.addAll(ShowIndexApi.retrofitService.getIndex(page))
+                _showIndexData.addAll(IndexApiRepository().getIndex(page))
                 _showIndexStatus.value = ShowIndexStatus.DONE
             } catch (e: Exception) {
                 _showIndexStatus.value = ShowIndexStatus.ERROR
@@ -66,7 +105,7 @@ class IndexViewModel : ViewModel() {
         }
     }
 
-    //Get shows by name from API
+    //Get shows by name from repository
     fun getShowNames(
         name: String
     ) {
@@ -75,7 +114,7 @@ class IndexViewModel : ViewModel() {
             ShowIndexStatus.LOADING
             try {
                 val searchList: MutableList<ShowIndex> = mutableListOf()
-                ShowIndexApi.retrofitService.getShowNames(name).forEach {
+                IndexApiRepository().getShowNames(name).forEach {
                     searchList.add(it.show)
                 }
                 _showIndexData.addAll(searchList)
@@ -84,5 +123,17 @@ class IndexViewModel : ViewModel() {
                 _showIndexStatus.value = ShowIndexStatus.ERROR
             }
         }
+    }
+}
+
+//Determine the view factory
+class IndexViewModelFactory(private val repository: IndexRoomRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(IndexViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return IndexViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
