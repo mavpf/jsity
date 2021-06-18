@@ -1,15 +1,17 @@
 package com.example.jobsity.episode
 
-import ShowIndexApi
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jobsity.network.ShowEpisodesDetails
+import com.example.jobsity.dataclasses.ShowEpisodesDetails
 import kotlinx.coroutines.launch
 
 class EpisodeViewModel : ViewModel() {
+
+    //Repository
+    private val repository =  EpisodeRepository()
 
     //ENUM for API
     enum class EpisodeDetailStatus { LOADING, ERROR, DONE }
@@ -29,7 +31,7 @@ class EpisodeViewModel : ViewModel() {
         viewModelScope.launch {
             EpisodeDetailStatus.LOADING
             try {
-                _episodeDetails.value = ShowIndexApi.retrofitService.getEpisodeDetails(id)
+                _episodeDetails.value = repository.getEpisodeDetails(id)
                 _episodeDetailsStatus.value = EpisodeDetailStatus.DONE
             } catch (e: java.lang.Exception) {
                 _episodeDetailsStatus.value = EpisodeDetailStatus.ERROR

@@ -65,7 +65,7 @@ class IndexFragment : Fragment() {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.mainRecyclerView.visibility = View.INVISIBLE
                 viewModel.showIndexData.clear()
-                viewModel._indexPage = 0
+                viewModel.indexPage = 0
                 searchFlag = false
                 viewModel.getShowIndex(viewModel.indexPage())
             } else {
@@ -83,7 +83,7 @@ class IndexFragment : Fragment() {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 if (binding.searchFieldValue.text.toString() == "") {
                     viewModel.showIndexData.clear()
-                    viewModel._indexPage = 0
+                    viewModel.indexPage = 0
                     searchFlag = false
                     viewModel.getShowIndex(viewModel.indexPage())
                     return@OnKeyListener true

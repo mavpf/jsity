@@ -1,19 +1,18 @@
 package com.example.jobsity.peopledetails
 
-import ShowIndexApi
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.jobsity.network.Credits
-import com.example.jobsity.network.ShowIndex
+import androidx.lifecycle.*
+import com.example.jobsity.dataclasses.Favorites
+import com.example.jobsity.dataclasses.Credits
+import com.example.jobsity.dataclasses.ShowIndex
 import kotlinx.coroutines.launch
 
-class PeopleDetailsViewModel : ViewModel() {
+class PeopleDetailsViewModel (private val roomRepository: PeopleDetailsRoomRepository): ViewModel() {
 
-    enum class _statusPeopleDetails { LOADING, DONE, ERROR }
-    enum class _statusCastDetails { LOADING, DONE, ERROR }
+    private val apiRepository = PeopleDetailsApiRepository()
+
+    enum class StatusPeopleDetails { LOADING, DONE, ERROR }
+    enum class StatusCastDetails { LOADING, DONE, ERROR }
 
     private val _castDetailsData = MutableLiveData<MutableList<ShowIndex>>()
     val castDetailsData: LiveData<MutableList<ShowIndex>> = _castDetailsData
@@ -23,13 +22,13 @@ class PeopleDetailsViewModel : ViewModel() {
 
     fun getPeopleDetails(id: Int) {
         viewModelScope.launch {
-            _statusPeopleDetails.LOADING
+            StatusPeopleDetails.LOADING
             try {
                 _peopleDetailsData.value =
-                    ShowIndexApi.retrofitService.getPeopleDetails(id, "castcredits")
-                _statusPeopleDetails.DONE
+                    apiRepository.getPeopleDetails(id)
+                StatusPeopleDetails.DONE
             } catch (e: Exception) {
-                _statusPeopleDetails.ERROR
+                StatusPeopleDetails.ERROR
                 _peopleDetailsData.value = null
             }
         }
@@ -39,25 +38,82 @@ class PeopleDetailsViewModel : ViewModel() {
         val tempData = mutableListOf<ShowIndex>()
         viewModelScope.launch {
             id.forEach {
-                _statusCastDetails.LOADING
+                StatusCastDetails.LOADING
                 try {
-                    val temp = ShowIndexApi.retrofitService.getShowDetail(it.toInt())
+                    val temp = apiRepository.getShowDetail(it.toInt())
                     tempData.add(
                         ShowIndex(
                             temp.id,
                             temp.name,
                             temp.genres,
-                            temp?.image
+                            temp.image
                         )
                     )
                     Log.d("ret_te", temp.toString())
-                    _statusCastDetails.DONE
+                    StatusCastDetails.DONE
                 } catch (e: java.lang.Exception) {
-                    _statusCastDetails.ERROR
+                    StatusCastDetails.ERROR
                     Log.d("ret_err", e.toString())
                 }
             }
             _castDetailsData.value = tempData
         }
+    }
+
+    //Livedata for favorites ID
+    val getIdFavorites: LiveData<List<Int>> = roomRepository.getIdFavorites.asLiveData()
+
+    fun updateFavorite(dataset: ShowIndex) {
+        var check: Int
+
+        //Transform data from API format to ROOM format
+        //Two fields, genre and image, are lists, and ROOM doesn't handle lists.
+        //Index View and recycler are working with API data format, so doesn't make sense
+        // to create another view, only because of two fields.
+        val favoritesData = transformToFavorites(dataset)
+
+        viewModelScope.launch {
+            //Check if a favorite is already saved
+            //Not allowed to have more than one id in the table
+            //So if return 0, means that the app must insert the value in the table
+            //If return one, means that it should be removed
+            check = roomRepository.getCountFavorites(dataset.id)
+
+            //If 0, insert
+            if (check == 0) {
+                viewModelScope.launch {
+                    roomRepository.insertFavorite(favoritesData)
+                }
+            } else {
+                //Else, remove
+                viewModelScope.launch {
+                    roomRepository.deleteFavorite(favoritesData)
+                }
+            }
+        }
+    }
+
+    //Function to transform API data to ROOM
+    fun transformToFavorites(showIndex: ShowIndex): Favorites {
+
+        return Favorites(
+            showIndex.id,
+            showIndex.name,
+            showIndex.genres.joinToString(", "),
+            showIndex.image?.medium.toString()
+        )
+    }
+
+}
+
+//Determine the view factory
+class PeopleDetailsViewModelFactory(private val repository: PeopleDetailsRoomRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(PeopleDetailsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return PeopleDetailsViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

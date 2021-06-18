@@ -1,14 +1,14 @@
 package com.example.jobsity.index
 
 import androidx.lifecycle.*
-import com.example.jobsity.db.Favorites
-import com.example.jobsity.network.ShowIndex
+import com.example.jobsity.dataclasses.Favorites
+import com.example.jobsity.dataclasses.ShowIndex
 import kotlinx.coroutines.launch
 
-class IndexViewModel(private val repository: IndexRoomRepository) : ViewModel() {
+class IndexViewModel(private val roomRepository: IndexRoomRepository) : ViewModel() {
 
     //Livedata for favorites ID
-    val getIdFavorites: LiveData<List<Int>> = repository.getIdFavorites.asLiveData()
+    val getIdFavorites: LiveData<List<Int>> = roomRepository.getIdFavorites.asLiveData()
 
     fun updateFavorite(dataset: ShowIndex) {
         var check: Int
@@ -24,17 +24,17 @@ class IndexViewModel(private val repository: IndexRoomRepository) : ViewModel() 
             //Not allowed to have more than one id in the table
             //So if return 0, means that the app must insert the value in the table
             //If return one, means that it should be removed
-            check = repository.getCountFavorites(dataset.id)
+            check = roomRepository.getCountFavorites(dataset.id)
 
             //If 0, insert
             if (check == 0) {
                 viewModelScope.launch {
-                    repository.insertFavorite(favoritesData)
+                    roomRepository.insertFavorite(favoritesData)
                 }
             } else {
                 //Else, remove
                 viewModelScope.launch {
-                    repository.deleteFavorite(favoritesData)
+                    roomRepository.deleteFavorite(favoritesData)
                 }
             }
         }
@@ -55,20 +55,19 @@ class IndexViewModel(private val repository: IndexRoomRepository) : ViewModel() 
 
     //Enum class for API status
     enum class ShowIndexStatus { LOADING, ERROR, DONE }
-    enum class ShowNameStatus { LOADING, ERROR, DONE }
 
     //Always start on first page
-    var _indexPage = 0
+    var indexPage = 0
 
     //Page getter
     fun indexPage(): Int {
-        return _indexPage
+        return indexPage
     }
 
 
     //Page setter up
     fun indexPageIncrease() {
-        _indexPage = _indexPage.inc()
+        indexPage = indexPage.inc()
     }
 
     //Livedata from API
@@ -76,7 +75,6 @@ class IndexViewModel(private val repository: IndexRoomRepository) : ViewModel() 
     val showIndexLiveData: LiveData<List<ShowIndex>> = _showIndexLiveData
 
     //Status from API
-    private val _showNameStatus = MutableLiveData<ShowNameStatus>()
     private val _showIndexStatus = MutableLiveData<ShowIndexStatus>()
     val showIndexStatus: LiveData<ShowIndexStatus> = _showIndexStatus
 
@@ -87,7 +85,7 @@ class IndexViewModel(private val repository: IndexRoomRepository) : ViewModel() 
 
     //Load initial info
     init {
-        getShowIndex(_indexPage)
+        getShowIndex(indexPage)
     }
 
     //Get shows by page from repository

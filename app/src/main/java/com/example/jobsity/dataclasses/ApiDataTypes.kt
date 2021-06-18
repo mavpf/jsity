@@ -1,4 +1,4 @@
-package com.example.jobsity.network
+package com.example.jobsity.dataclasses
 
 import com.squareup.moshi.Json
 

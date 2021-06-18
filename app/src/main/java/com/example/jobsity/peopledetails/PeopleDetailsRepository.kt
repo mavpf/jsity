@@ -1,15 +1,24 @@
-package com.example.jobsity.index
+package com.example.jobsity.peopledetails
 
 import androidx.annotation.WorkerThread
 import com.example.jobsity.dataclasses.Favorites
 import com.example.jobsity.db.FavoritesDao
-import com.example.jobsity.dataclasses.ShowIndex
-import com.example.jobsity.dataclasses.ShowNames
+import com.example.jobsity.dataclasses.Credits
+import com.example.jobsity.dataclasses.ShowDetails
 import kotlinx.coroutines.flow.Flow
 
+class PeopleDetailsApiRepository {
 
-class IndexRoomRepository(private val favoritesDao: FavoritesDao) {
-    //Insert favorite
+    suspend fun getPeopleDetails(id: Int): Credits {
+        return ShowIndexApi.retrofitService.getPeopleDetails(id, "castcredits")
+    }
+
+    suspend fun getShowDetail(id: Int): ShowDetails {
+        return ShowIndexApi.retrofitService.getShowDetail(id)
+    }
+}
+
+class PeopleDetailsRoomRepository(private val favoritesDao: FavoritesDao) {
     @WorkerThread
     suspend fun insertFavorite(favorites: Favorites) {
         favoritesDao.insertFavorite(favorites)
@@ -29,15 +38,4 @@ class IndexRoomRepository(private val favoritesDao: FavoritesDao) {
     @WorkerThread
     suspend fun getCountFavorites(id: Int): Int =
         favoritesDao.getCountFavorites(id)
-
-}
-
-class IndexApiRepository {
-    suspend fun getIndex(page: Int) : List<ShowIndex>{
-        return ShowIndexApi.retrofitService.getIndex(page)
-    }
-
-    suspend fun getShowNames(show: String): List<ShowNames>{
-        return ShowIndexApi.retrofitService.getShowNames(show)
-    }
 }

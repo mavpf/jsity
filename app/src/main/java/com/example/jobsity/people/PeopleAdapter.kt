@@ -7,7 +7,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.R
 import com.example.jobsity.databinding.GridPeopleBinding
-import com.example.jobsity.network.PersonResult
+import com.example.jobsity.dataclasses.PersonResult
 import com.squareup.picasso.Picasso
 
 class PeopleAdapter (

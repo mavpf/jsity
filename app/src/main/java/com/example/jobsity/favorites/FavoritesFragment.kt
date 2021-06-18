@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.databinding.FragmentIndexBinding
-import com.example.jobsity.db.FavoritesViewModel
-import com.example.jobsity.db.FavoritesViewModelFactory
 import com.example.jobsity.index.IndexAdapter
 
 class FavoritesFragment : Fragment() {
