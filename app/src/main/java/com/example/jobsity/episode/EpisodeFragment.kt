@@ -14,7 +14,6 @@ import com.squareup.picasso.Picasso
 class EpisodeFragment : Fragment() {
 
     private val viewModel: EpisodeViewModel by viewModels()
-
     private var _binding: FragmentEpisodeBinding? = null
     private val binding get() = _binding!!
 

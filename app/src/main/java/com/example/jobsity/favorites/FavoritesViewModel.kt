@@ -1,8 +1,9 @@
-package com.example.jobsity.db
+package com.example.jobsity.favorites
 
 import androidx.lifecycle.*
-import com.example.jobsity.network.Images
-import com.example.jobsity.network.ShowIndex
+import com.example.jobsity.dataclasses.Favorites
+import com.example.jobsity.dataclasses.Images
+import com.example.jobsity.dataclasses.ShowIndex
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(private val repository: FavoritesRepository) : ViewModel() {

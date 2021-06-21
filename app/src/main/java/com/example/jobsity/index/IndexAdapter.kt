@@ -7,7 +7,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.R
 import com.example.jobsity.databinding.GridIndexBinding
-import com.example.jobsity.network.ShowIndex
+import com.example.jobsity.dataclasses.ShowIndex
 import com.squareup.picasso.Picasso
 
 //Recyclerview adapter for shows

@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.databinding.FragmentIndexBinding
-import com.example.jobsity.db.FavoritesViewModel
-import com.example.jobsity.db.FavoritesViewModelFactory
 
 
 /**
@@ -23,10 +21,8 @@ import com.example.jobsity.db.FavoritesViewModelFactory
  */
 class IndexFragment : Fragment() {
 
-    private val viewModel: IndexViewModel by viewModels()
-
-    private val favoritesViewModel: FavoritesViewModel by viewModels {
-        FavoritesViewModelFactory((context?.applicationContext as JobsityApplication).repository)
+    private val viewModel: IndexViewModel by viewModels {
+        IndexViewModelFactory((context?.applicationContext as JobsityApplication).indexRepository)
     }
 
     //View Binding
@@ -69,7 +65,7 @@ class IndexFragment : Fragment() {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.mainRecyclerView.visibility = View.INVISIBLE
                 viewModel.showIndexData.clear()
-                viewModel._indexPage = 0
+                viewModel.indexPage = 0
                 searchFlag = false
                 viewModel.getShowIndex(viewModel.indexPage())
             } else {
@@ -87,7 +83,7 @@ class IndexFragment : Fragment() {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 if (binding.searchFieldValue.text.toString() == "") {
                     viewModel.showIndexData.clear()
-                    viewModel._indexPage = 0
+                    viewModel.indexPage = 0
                     searchFlag = false
                     viewModel.getShowIndex(viewModel.indexPage())
                     return@OnKeyListener true
@@ -102,7 +98,7 @@ class IndexFragment : Fragment() {
 
         //Observe data
         viewModel.showIndexStatus.observe(viewLifecycleOwner, {
-            favoritesViewModel.getIdFavorites.observe(viewLifecycleOwner, {
+            viewModel.getIdFavorites.observe(viewLifecycleOwner, {
                 //Create adapter with info from API and ROOM (Favorites)
                 //Hide progressbar
                 binding.progressBar.visibility = View.GONE
@@ -112,7 +108,7 @@ class IndexFragment : Fragment() {
                 binding.mainRecyclerView.adapter =
                     IndexAdapter(viewModel.showIndexData, it) { dataset ->
                         //Listening to clickListener from the adapter, and update favorites
-                        favoritesViewModel.updateFavorite(dataset)
+                        viewModel.updateFavorite(dataset)
                     }
                 //Restore recyclerview state
                 mLayoutManager.onRestoreInstanceState(recyclerViewState)

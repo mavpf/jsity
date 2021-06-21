@@ -10,16 +10,14 @@ import androidx.fragment.app.viewModels
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.R
 import com.example.jobsity.databinding.FragmentPeopleDetailsBinding
-import com.example.jobsity.db.FavoritesViewModel
-import com.example.jobsity.db.FavoritesViewModelFactory
 import com.squareup.picasso.Picasso
 
 class PeopleDetailsFragment : Fragment() {
 
-    val viewModel: PeopleDetailsViewModel by viewModels()
+    //val viewModel: PeopleDetailsViewModel by viewModels()
 
-    private val favoritesViewModel: FavoritesViewModel by viewModels {
-        FavoritesViewModelFactory((context?.applicationContext as JobsityApplication).repository)
+    private val viewModel: PeopleDetailsViewModel by viewModels {
+        PeopleDetailsViewModelFactory((context?.applicationContext as JobsityApplication).peopleDetailsRepository)
     }
 
     private var _binding: FragmentPeopleDetailsBinding? = null
@@ -65,12 +63,12 @@ class PeopleDetailsFragment : Fragment() {
 
         viewModel.castDetailsData.observe(viewLifecycleOwner, { record ->
             Log.d("ret_d", record.toString())
-            favoritesViewModel.getIdFavorites.observe(viewLifecycleOwner, {
+            viewModel.getIdFavorites.observe(viewLifecycleOwner, {
                 binding.personRecyclerview.adapter = PeopleDetailsAdapter(
                     record,
                     it
                 ) { dataset ->
-                    favoritesViewModel.updateFavorite(dataset)
+                    viewModel.updateFavorite(dataset)
                 }
             })
 

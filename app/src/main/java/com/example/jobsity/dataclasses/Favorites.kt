@@ -1,4 +1,4 @@
-package com.example.jobsity.db
+package com.example.jobsity.dataclasses
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

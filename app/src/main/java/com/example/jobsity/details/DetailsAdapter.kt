@@ -7,7 +7,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.R
 import com.example.jobsity.databinding.GridEpisodesBinding
-import com.example.jobsity.network.ShowEpisodes
+import com.example.jobsity.dataclasses.ShowEpisodes
 import com.squareup.picasso.Picasso
 
 //Recycler view adapter for episodes

@@ -1,5 +1,5 @@
 
-import com.example.jobsity.network.*
+import com.example.jobsity.dataclasses.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -57,7 +57,7 @@ interface ShowIndexApiService {
 
     //Get people
     @GET("search/people")
-    suspend fun getPeopleName(
+    suspend fun searchPerson(
         @Query("q") q: String
     ): List<PersonResult>
 

@@ -1,6 +1,8 @@
-package com.example.jobsity.db
+package com.example.jobsity.favorites
 
 import androidx.annotation.WorkerThread
+import com.example.jobsity.dataclasses.Favorites
+import com.example.jobsity.db.FavoritesDao
 import kotlinx.coroutines.flow.Flow
 
 class FavoritesRepository(private val favoritesDao: FavoritesDao) {
