@@ -5,9 +5,11 @@ import com.example.jobsity.data.db.FavoritesDatabase
 import com.example.jobsity.ui.favorites.FavoritesRepository
 import com.example.jobsity.ui.index.IndexRoomRepository
 import com.example.jobsity.ui.peopledetails.PeopleDetailsRoomRepository
+import dagger.hilt.android.HiltAndroidApp
 
 //Needed for ROOM
 
+@HiltAndroidApp
 class JobsityApplication : Application() {
 
     val database by lazy { FavoritesDatabase.getDatabase(this) }

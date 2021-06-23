@@ -11,8 +11,9 @@ import androidx.fragment.app.viewModels
 import com.example.jobsity.R
 import com.example.jobsity.databinding.FragmentDetailsBinding
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class DetailsFragment : Fragment() {
 
     private val viewModel: DetailsViewModel by viewModels()

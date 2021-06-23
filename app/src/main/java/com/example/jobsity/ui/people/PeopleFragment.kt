@@ -10,7 +10,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.jobsity.databinding.FragmentIndexBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PeopleFragment : Fragment() {
 
     private val viewModel: PeopleViewModel by viewModels()

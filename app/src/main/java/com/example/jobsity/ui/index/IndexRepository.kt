@@ -5,10 +5,14 @@ import com.example.jobsity.data.classes.Favorites
 import com.example.jobsity.data.db.FavoritesDao
 import com.example.jobsity.data.classes.ShowIndex
 import com.example.jobsity.data.classes.ShowNames
+import com.example.jobsity.network.api.ServiceApiHelper
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 
-class IndexRoomRepository(private val favoritesDao: FavoritesDao) {
+class IndexRoomRepository @Inject constructor(
+    private val favoritesDao: FavoritesDao
+    ) {
     //Insert favorite
     @WorkerThread
     suspend fun insertFavorite(favorites: Favorites) {
@@ -32,12 +36,14 @@ class IndexRoomRepository(private val favoritesDao: FavoritesDao) {
 
 }
 
-class IndexApiRepository {
+class IndexApiRepository @Inject constructor(
+    private val serviceApiHelper: ServiceApiHelper
+) {
     suspend fun getIndex(page: Int) : List<ShowIndex>{
-        return ShowIndexApi.retrofitService.getIndex(page)
+        return serviceApiHelper.getIndex(page)
     }
 
     suspend fun getShowNames(show: String): List<ShowNames>{
-        return ShowIndexApi.retrofitService.getShowNames(show)
+        return serviceApiHelper.getShowNames(show)
     }
 }

@@ -11,12 +11,12 @@ import com.example.jobsity.JobsityApplication
 import com.example.jobsity.R
 import com.example.jobsity.databinding.FragmentPeopleDetailsBinding
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PeopleDetailsFragment : Fragment() {
 
-    private val viewModel: PeopleDetailsViewModel by viewModels {
-        PeopleDetailsViewModelFactory((context?.applicationContext as JobsityApplication).peopleDetailsRepository)
-    }
+    private val viewModel: PeopleDetailsViewModel by viewModels()
 
     private var _binding: FragmentPeopleDetailsBinding? = null
     private val binding get() = _binding!!

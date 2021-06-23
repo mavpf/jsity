@@ -3,9 +3,15 @@ package com.example.jobsity.ui.index
 import androidx.lifecycle.*
 import com.example.jobsity.data.classes.Favorites
 import com.example.jobsity.data.classes.ShowIndex
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class IndexViewModel(private val roomRepository: IndexRoomRepository) : ViewModel() {
+@HiltViewModel
+class IndexViewModel @Inject constructor(
+    private val roomRepository: IndexRoomRepository,
+    private val apiRepository: IndexApiRepository
+) : ViewModel() {
 
     //Livedata for favorites ID
     val getIdFavorites: LiveData<List<Int>> = roomRepository.getIdFavorites.asLiveData()
@@ -95,7 +101,7 @@ class IndexViewModel(private val roomRepository: IndexRoomRepository) : ViewMode
         viewModelScope.launch {
             ShowIndexStatus.LOADING
             try {
-                _showIndexData.addAll(IndexApiRepository().getIndex(page))
+                _showIndexData.addAll(apiRepository.getIndex(page))
                 _showIndexStatus.value = ShowIndexStatus.DONE
             } catch (e: Exception) {
                 _showIndexStatus.value = ShowIndexStatus.ERROR
@@ -112,7 +118,7 @@ class IndexViewModel(private val roomRepository: IndexRoomRepository) : ViewMode
             ShowIndexStatus.LOADING
             try {
                 val searchList: MutableList<ShowIndex> = mutableListOf()
-                IndexApiRepository().getShowNames(name).forEach {
+                apiRepository.getShowNames(name).forEach {
                     searchList.add(it.show)
                 }
                 _showIndexData.addAll(searchList)
@@ -121,17 +127,5 @@ class IndexViewModel(private val roomRepository: IndexRoomRepository) : ViewMode
                 _showIndexStatus.value = ShowIndexStatus.ERROR
             }
         }
-    }
-}
-
-//Determine the view factory
-class IndexViewModelFactory(private val repository: IndexRoomRepository) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(IndexViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return IndexViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

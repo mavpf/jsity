@@ -4,9 +4,14 @@ import androidx.lifecycle.*
 import com.example.jobsity.data.classes.Favorites
 import com.example.jobsity.data.classes.Images
 import com.example.jobsity.data.classes.ShowIndex
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoritesViewModel(private val repository: FavoritesRepository) : ViewModel() {
+@HiltViewModel
+class FavoritesViewModel @Inject constructor(
+    private val repository: FavoritesRepository
+    ) : ViewModel() {
 
     //Livedata for favorites ID
     val getIdFavorites: LiveData<List<Int>> = repository.getIdFavorites.asLiveData()
@@ -82,17 +87,5 @@ class FavoritesViewModel(private val repository: FavoritesRepository) : ViewMode
             showIndex.genres.joinToString(", "),
             showIndex.image?.medium.toString()
         )
-    }
-}
-
-//Determine the view factory
-class FavoritesViewModelFactory(private val repository: FavoritesRepository) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return FavoritesViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

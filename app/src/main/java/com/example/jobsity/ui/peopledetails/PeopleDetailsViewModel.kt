@@ -5,11 +5,18 @@ import androidx.lifecycle.*
 import com.example.jobsity.data.classes.Favorites
 import com.example.jobsity.data.classes.Credits
 import com.example.jobsity.data.classes.ShowIndex
+import com.example.jobsity.network.api.ServiceApiHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PeopleDetailsViewModel (private val roomRepository: PeopleDetailsRoomRepository): ViewModel() {
+@HiltViewModel
+class PeopleDetailsViewModel @Inject constructor(
+    private val roomRepository: PeopleDetailsRoomRepository,
+    private val apiRepository: PeopleDetailsApiRepository
+): ViewModel() {
 
-    private val apiRepository = PeopleDetailsApiRepository()
+    //private val apiRepository = PeopleDetailsApiRepository()
 
     enum class StatusPeopleDetails { LOADING, DONE, ERROR }
     enum class StatusCastDetails { LOADING, DONE, ERROR }
@@ -104,16 +111,4 @@ class PeopleDetailsViewModel (private val roomRepository: PeopleDetailsRoomRepos
         )
     }
 
-}
-
-//Determine the view factory
-class PeopleDetailsViewModelFactory(private val repository: PeopleDetailsRoomRepository) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(PeopleDetailsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return PeopleDetailsViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
 }

@@ -14,16 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.databinding.FragmentIndexBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
+@AndroidEntryPoint
 class IndexFragment : Fragment() {
 
-    private val viewModel: IndexViewModel by viewModels {
-        IndexViewModelFactory((context?.applicationContext as JobsityApplication).indexRepository)
-    }
+    private val viewModel: IndexViewModel by viewModels()
 
     //View Binding
     private var _binding: FragmentIndexBinding? = null

@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.jobsity.JobsityApplication
 import com.example.jobsity.databinding.FragmentIndexBinding
 import com.example.jobsity.ui.index.IndexAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoritesFragment : Fragment() {
 
     //viewModel for ROOM
-    private val viewModel: FavoritesViewModel by viewModels {
-        FavoritesViewModelFactory((context?.applicationContext as JobsityApplication).repository)
-    }
+    private val viewModel: FavoritesViewModel by viewModels()
 
     private var _binding: FragmentIndexBinding? = null
     private val binding get() = _binding!!

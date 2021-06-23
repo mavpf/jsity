@@ -2,14 +2,18 @@ package com.example.jobsity.ui.details
 
 import com.example.jobsity.data.classes.ShowDetails
 import com.example.jobsity.data.classes.ShowEpisodes
+import com.example.jobsity.network.api.ServiceApiHelper
+import javax.inject.Inject
 
-class DetailsRepository {
+class DetailsRepository @Inject constructor(
+    private val serviceApiHelper: ServiceApiHelper
+){
     suspend fun getShowEpisodes(id: Int): List<ShowEpisodes>
     {
-        return ShowIndexApi.retrofitService.getShowEpisodes(id)
+        return serviceApiHelper.getShowEpisodes(id)
     }
 
     suspend fun getShowDetail(id: Int): ShowDetails {
-        return ShowIndexApi.retrofitService.getShowDetail(id)
+        return serviceApiHelper.getShowDetail(id)
     }
 }

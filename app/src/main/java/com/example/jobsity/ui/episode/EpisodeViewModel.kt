@@ -6,12 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jobsity.data.classes.ShowEpisodesDetails
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EpisodeViewModel : ViewModel() {
+@HiltViewModel
+class EpisodeViewModel @Inject constructor(
+    private val repository: EpisodeRepository
+): ViewModel() {
 
     //Repository
-    private val repository =  EpisodeRepository()
+    //private val repository =  EpisodeRepository()
 
     //ENUM for API
     enum class EpisodeDetailStatus { LOADING, ERROR, DONE }

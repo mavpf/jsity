@@ -10,7 +10,9 @@ import androidx.fragment.app.viewModels
 import com.example.jobsity.R
 import com.example.jobsity.databinding.FragmentEpisodeBinding
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EpisodeFragment : Fragment() {
 
     private val viewModel: EpisodeViewModel by viewModels()

@@ -7,12 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jobsity.data.classes.ShowDetails
 import com.example.jobsity.data.classes.ShowEpisodes
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailsViewModel : ViewModel() {
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
+    private val repository: DetailsRepository
+) : ViewModel() {
 
     //Repository
-    private val repository = DetailsRepository()
+    //private val repository = DetailsRepository()
 
     //Enum for API
     enum class ShowDetailStatus { LOADING, ERROR, DONE }
