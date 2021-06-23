@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class IndexRoomRepository @Inject constructor(
-    private val favoritesDao: FavoritesDao
+class IndexRepository @Inject constructor(
+    private val favoritesDao: FavoritesDao,
+    private val serviceApiHelper: ServiceApiHelper
     ) {
     //Insert favorite
     @WorkerThread
@@ -34,11 +35,7 @@ class IndexRoomRepository @Inject constructor(
     suspend fun getCountFavorites(id: Int): Int =
         favoritesDao.getCountFavorites(id)
 
-}
 
-class IndexApiRepository @Inject constructor(
-    private val serviceApiHelper: ServiceApiHelper
-) {
     suspend fun getIndex(page: Int) : List<ShowIndex>{
         return serviceApiHelper.getIndex(page)
     }
@@ -46,4 +43,5 @@ class IndexApiRepository @Inject constructor(
     suspend fun getShowNames(show: String): List<ShowNames>{
         return serviceApiHelper.getShowNames(show)
     }
+
 }

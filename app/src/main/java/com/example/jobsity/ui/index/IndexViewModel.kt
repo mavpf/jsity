@@ -9,12 +9,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IndexViewModel @Inject constructor(
-    private val roomRepository: IndexRoomRepository,
-    private val apiRepository: IndexApiRepository
+    private val repository: IndexRepository
 ) : ViewModel() {
 
     //Livedata for favorites ID
-    val getIdFavorites: LiveData<List<Int>> = roomRepository.getIdFavorites.asLiveData()
+    val getIdFavorites: LiveData<List<Int>> = repository.getIdFavorites.asLiveData()
 
     fun updateFavorite(dataset: ShowIndex) {
         var check: Int
@@ -30,17 +29,17 @@ class IndexViewModel @Inject constructor(
             //Not allowed to have more than one id in the table
             //So if return 0, means that the app must insert the value in the table
             //If return one, means that it should be removed
-            check = roomRepository.getCountFavorites(dataset.id)
+            check = repository.getCountFavorites(dataset.id)
 
             //If 0, insert
             if (check == 0) {
                 viewModelScope.launch {
-                    roomRepository.insertFavorite(favoritesData)
+                    repository.insertFavorite(favoritesData)
                 }
             } else {
                 //Else, remove
                 viewModelScope.launch {
-                    roomRepository.deleteFavorite(favoritesData)
+                    repository.deleteFavorite(favoritesData)
                 }
             }
         }
@@ -101,7 +100,7 @@ class IndexViewModel @Inject constructor(
         viewModelScope.launch {
             ShowIndexStatus.LOADING
             try {
-                _showIndexData.addAll(apiRepository.getIndex(page))
+                _showIndexData.addAll(repository.getIndex(page))
                 _showIndexStatus.value = ShowIndexStatus.DONE
             } catch (e: Exception) {
                 _showIndexStatus.value = ShowIndexStatus.ERROR
@@ -118,7 +117,7 @@ class IndexViewModel @Inject constructor(
             ShowIndexStatus.LOADING
             try {
                 val searchList: MutableList<ShowIndex> = mutableListOf()
-                apiRepository.getShowNames(name).forEach {
+                repository.getShowNames(name).forEach {
                     searchList.add(it.show)
                 }
                 _showIndexData.addAll(searchList)

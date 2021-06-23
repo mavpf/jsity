@@ -5,15 +5,13 @@ import androidx.lifecycle.*
 import com.example.jobsity.data.classes.Favorites
 import com.example.jobsity.data.classes.Credits
 import com.example.jobsity.data.classes.ShowIndex
-import com.example.jobsity.network.api.ServiceApiHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PeopleDetailsViewModel @Inject constructor(
-    private val roomRepository: PeopleDetailsRoomRepository,
-    private val apiRepository: PeopleDetailsApiRepository
+    private val repository: PeopleDetailsRepository
 ): ViewModel() {
 
     //private val apiRepository = PeopleDetailsApiRepository()
@@ -32,7 +30,7 @@ class PeopleDetailsViewModel @Inject constructor(
             StatusPeopleDetails.LOADING
             try {
                 _peopleDetailsData.value =
-                    apiRepository.getPeopleDetails(id)
+                    repository.getPeopleDetails(id)
                 StatusPeopleDetails.DONE
             } catch (e: Exception) {
                 StatusPeopleDetails.ERROR
@@ -47,7 +45,7 @@ class PeopleDetailsViewModel @Inject constructor(
             id.forEach {
                 StatusCastDetails.LOADING
                 try {
-                    val temp = apiRepository.getShowDetail(it.toInt())
+                    val temp = repository.getShowDetail(it.toInt())
                     tempData.add(
                         ShowIndex(
                             temp.id,
@@ -68,7 +66,7 @@ class PeopleDetailsViewModel @Inject constructor(
     }
 
     //Livedata for favorites ID
-    val getIdFavorites: LiveData<List<Int>> = roomRepository.getIdFavorites.asLiveData()
+    val getIdFavorites: LiveData<List<Int>> = repository.getIdFavorites.asLiveData()
 
     fun updateFavorite(dataset: ShowIndex) {
         var check: Int
@@ -84,17 +82,17 @@ class PeopleDetailsViewModel @Inject constructor(
             //Not allowed to have more than one id in the table
             //So if return 0, means that the app must insert the value in the table
             //If return one, means that it should be removed
-            check = roomRepository.getCountFavorites(dataset.id)
+            check = repository.getCountFavorites(dataset.id)
 
             //If 0, insert
             if (check == 0) {
                 viewModelScope.launch {
-                    roomRepository.insertFavorite(favoritesData)
+                    repository.insertFavorite(favoritesData)
                 }
             } else {
                 //Else, remove
                 viewModelScope.launch {
-                    roomRepository.deleteFavorite(favoritesData)
+                    repository.deleteFavorite(favoritesData)
                 }
             }
         }

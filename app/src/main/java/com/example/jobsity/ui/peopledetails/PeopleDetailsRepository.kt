@@ -9,8 +9,9 @@ import com.example.jobsity.network.api.ServiceApiHelper
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class PeopleDetailsApiRepository @Inject constructor(
-    private val provideServiceApiHelper: ServiceApiHelper
+class PeopleDetailsRepository @Inject constructor(
+    private val provideServiceApiHelper: ServiceApiHelper,
+    private val provideFavoritesDao: FavoritesDao
     ){
 
     suspend fun getPeopleDetails(id: Int): Credits {
@@ -20,11 +21,6 @@ class PeopleDetailsApiRepository @Inject constructor(
     suspend fun getShowDetail(id: Int): ShowDetails {
         return provideServiceApiHelper.getShowDetail(id)
     }
-}
-
-class PeopleDetailsRoomRepository @Inject constructor(
-    private val provideFavoritesDao: FavoritesDao
-    ) {
 
     @WorkerThread
     suspend fun insertFavorite(favorites: Favorites) {

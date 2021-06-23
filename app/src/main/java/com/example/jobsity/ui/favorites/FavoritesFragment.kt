@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FavoritesFragment : Fragment() {
 
-    //viewModel for ROOM
     private val viewModel: FavoritesViewModel by viewModels()
 
     private var _binding: FragmentIndexBinding? = null
