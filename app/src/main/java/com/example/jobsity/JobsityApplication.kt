@@ -1,10 +1,10 @@
 package com.example.jobsity
 
 import android.app.Application
-import com.example.jobsity.db.FavoritesDatabase
-import com.example.jobsity.favorites.FavoritesRepository
-import com.example.jobsity.index.IndexRoomRepository
-import com.example.jobsity.peopledetails.PeopleDetailsRoomRepository
+import com.example.jobsity.data.db.FavoritesDatabase
+import com.example.jobsity.ui.favorites.FavoritesRepository
+import com.example.jobsity.ui.index.IndexRoomRepository
+import com.example.jobsity.ui.peopledetails.PeopleDetailsRoomRepository
 
 //Needed for ROOM
 
