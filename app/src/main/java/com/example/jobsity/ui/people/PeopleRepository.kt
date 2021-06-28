@@ -9,6 +9,9 @@ class PeopleRepository @Inject constructor(
 ) {
 
     suspend fun searchPerson(name: String): List<PersonResult>{
+
         return serviceApiHelper.searchPerson(name)
+
+
     }
 }

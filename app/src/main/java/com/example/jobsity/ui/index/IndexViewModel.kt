@@ -12,6 +12,7 @@ class IndexViewModel @Inject constructor(
     private val repository: IndexRepository
 ) : ViewModel() {
 
+
     //Livedata for favorites ID
     val getIdFavorites: LiveData<List<Int>> = repository.getIdFavorites.asLiveData()
 

@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jobsity.JobsityApplication
 import com.example.jobsity.databinding.FragmentIndexBinding
 import dagger.hilt.android.AndroidEntryPoint
 
