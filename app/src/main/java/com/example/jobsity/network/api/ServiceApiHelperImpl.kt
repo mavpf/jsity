@@ -3,6 +3,7 @@ package com.example.jobsity.network.api
 import com.example.jobsity.data.classes.*
 import javax.inject.Inject
 
+//Helper injection implementation for Hilt
 class ServiceApiHelperImpl @Inject constructor(
     private val serviceApi: ServiceApi
 ): ServiceApiHelper {

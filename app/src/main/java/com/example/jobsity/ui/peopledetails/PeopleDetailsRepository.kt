@@ -14,14 +14,17 @@ class PeopleDetailsRepository @Inject constructor(
     private val provideFavoritesDao: FavoritesDao
     ){
 
+    //Get people details
     suspend fun getPeopleDetails(id: Int): Credits {
         return provideServiceApiHelper.getPeopleDetails(id, "castcredits")
     }
 
+    //Get Show details
     suspend fun getShowDetail(id: Int): ShowDetails {
         return provideServiceApiHelper.getShowDetail(id)
     }
 
+    //Insert favorite
     @WorkerThread
     suspend fun insertFavorite(favorites: Favorites) {
         provideFavoritesDao.insertFavorite(favorites)

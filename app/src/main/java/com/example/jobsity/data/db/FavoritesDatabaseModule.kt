@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+//Hilt Object Module creation for database
 @InstallIn(SingletonComponent::class)
 @Module
 object FavoritesDatabaseModule {

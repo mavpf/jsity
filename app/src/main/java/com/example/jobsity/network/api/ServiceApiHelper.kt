@@ -2,6 +2,7 @@ package com.example.jobsity.network.api
 
 import com.example.jobsity.data.classes.*
 
+//Helper is needed for Hilt injection
 interface ServiceApiHelper {
 
     suspend fun getIndex(page : Int): List<ShowIndex>
