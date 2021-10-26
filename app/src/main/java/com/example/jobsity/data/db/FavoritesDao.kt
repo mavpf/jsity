@@ -8,7 +8,7 @@ import com.example.jobsity.data.classes.Favorites
 import kotlinx.coroutines.flow.Flow
 
 
-//Interface definitio for DB
+//Interface definition for DB
 @Dao
 interface FavoritesDao {
     //Insert function
